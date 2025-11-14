@@ -1,4 +1,4 @@
-package com.bpm.ingestservice;
+package com.bpm.mqttingestservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

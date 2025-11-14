@@ -1,4 +1,4 @@
-package com.bpm.ingestservice;
+package com.bpm.mqttingestservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
