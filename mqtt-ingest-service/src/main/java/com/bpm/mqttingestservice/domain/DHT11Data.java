@@ -1,10 +1,11 @@
 package com.bpm.mqttingestservice.domain;
 
+import com.bpm.mqttingestservice.rabbit.dto.SensorMeasurementEvent;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class DHT11Data {
+public class DHT11Data implements SensorData {
     @JsonProperty("Temperature")
     private double temperature;
 
@@ -36,5 +37,15 @@ public class DHT11Data {
 
     public void setDewPoint(double dewPoint) {
         this.dewPoint = dewPoint;
+    }
+
+    @Override
+    public SensorMeasurementEvent toMeasurementEvent(String topic) {
+        return SensorMeasurementEvent.builder()
+                .sensorName(topic)
+                .temperature(this.getTemperature())
+                .humidity(this.getHumidity())
+                .dewPoint(this.getDewPoint())
+                .build();
     }
 }

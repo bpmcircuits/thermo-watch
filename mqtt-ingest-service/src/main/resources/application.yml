@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: mqtt-ingest-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 mqtt:
   broker: ${MQTT_BROKER}
@@ -13,3 +18,11 @@ mqtt:
     password: ${MQTT_PASS}
     topic: tele/+/SENSOR
   qos: 1
+
+rabbitmq:
+  exchange:
+    name: sensor.exchange
+  queue:
+    name: sensor.queue
+  routing:
+    key: sensor.tracking
