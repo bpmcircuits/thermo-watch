@@ -1,0 +1,42 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: mqtt-ingest-service
+  rabbitmq:
+    host: ${AMQP_HOST:localhost}
+    port: ${AMQP_PORT:5672}
+    username: ${AMQP_USER:guest}
+    password: ${AMQP_PASS:guest}
+    template:
+      exchange: telemetry.topic   # domyślny exchange do publish
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
+      probes:
+        enabled: true
+  health:
+    rabbit:
+      enabled: true   # wbudowany health dla AMQP
+    mqtt:
+      enabled: true   # nasz custom indicator
+ingest:
+  mqtt:
+    url: ${MQTT_URL:tcp://10.20.10.101:1883}
+    clientId: ${MQTT_CLIENT_ID:java}
+    username: ${MQTT_USER:admin}
+    password: ${MQTT_PASS:mosquitto1944}
+    topicFilter: ${MQTT_TOPIC:tele/temperature/SENSOR}
+    qos: 1
+  defaults:
+    tenantId: ${DEFAULT_TENANT:acme}
+    firmware: tasmota
+  routing:
+    # routing key: telemetry.reading.<tenant>.<device>
+    pattern: telemetry.reading.%s.%s
