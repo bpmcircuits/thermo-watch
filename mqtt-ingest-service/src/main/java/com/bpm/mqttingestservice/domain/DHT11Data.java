@@ -4,6 +4,8 @@ import com.bpm.mqttingestservice.rabbit.dto.SensorMeasurementEvent;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.LocalDateTime;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DHT11Data implements SensorData {
     @JsonProperty("Temperature")
@@ -43,9 +45,11 @@ public class DHT11Data implements SensorData {
     public SensorMeasurementEvent toMeasurementEvent(String topic) {
         return SensorMeasurementEvent.builder()
                 .sensorName(topic)
+                .sensorId(null)
                 .temperature(this.getTemperature())
                 .humidity(this.getHumidity())
                 .dewPoint(this.getDewPoint())
+                .timestamp(LocalDateTime.now())
                 .build();
     }
 }

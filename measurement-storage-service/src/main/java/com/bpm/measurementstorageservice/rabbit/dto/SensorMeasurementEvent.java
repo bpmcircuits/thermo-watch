@@ -1,4 +1,4 @@
-package com.bpm.mqttingestservice.rabbit.dto;
+package com.bpm.measurementstorageservice.rabbit.dto;
 
 import lombok.Builder;
 

@@ -1,2 +1,3 @@
 rootProject.name = 'ThermoWatch'
 include 'mqtt-ingest-service'
+include 'measurement-storage-service'
