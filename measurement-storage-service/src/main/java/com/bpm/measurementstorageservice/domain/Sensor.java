@@ -1,10 +1,7 @@
 package com.bpm.measurementstorageservice.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,35 +9,38 @@ import java.util.List;
 @Entity
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "sensor")
 public class Sensor {
 
-
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "sensor_id")
+    @Column(name = "sensor_id",nullable = false, unique = true)
     private String sensorId;
     @Column(name = "sensor_type")
     private String sensorType;
-    @Column(name = "location")
+    @Column(name = "location", nullable = false)
     private String location;
-    @Column(name = "timestamp")
-    private String timestamp;
     @Column(name = "last_seen")
     private LocalDateTime lastSeen;
     @Column(name = "is_online")
     private Boolean isOnline;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sensor_measurement_id")
+    @OneToMany(mappedBy = "sensor")
     private List<Measurement> measurements;
 
-    @ManyToOne
-    @JoinColumn(name = "room_data_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_data_fk")
     private RoomData roomData;
+
+    public void setRoomData(RoomData roomData) {
+        this.roomData = roomData;
+        if (roomData != null && roomData.getSensors() != null && !roomData.getSensors().contains(this)) {
+            roomData.getSensors().add(this);
+        }
+    }
 }

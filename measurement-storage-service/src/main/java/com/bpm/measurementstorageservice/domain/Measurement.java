@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,21 +18,26 @@ import java.time.LocalDateTime;
 public class Measurement {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "sensor_id")
-    private String sensorId;
-    @Column(name = "temperature")
-    private Double temperature;
-    @Column(name = "humidity")
-    private Double humidity;
-    @Column(name = "dew_point")
-    private Double dewPoint;
-    @Column(name = "timestamp")
+    @Column(name = "temperature", precision = 5, scale = 2)
+    private BigDecimal temperature;
+    @Column(name = "humidity", precision = 5, scale = 2)
+    private BigDecimal humidity;
+    @Column(name = "dew_point", precision = 5, scale = 2)
+    private BigDecimal dewPoint;
+    @Column(name = "timestamp", nullable = false)
     private LocalDateTime timestamp;
 
-    @ManyToOne
-    @JoinColumn(name = "sensor_measurement_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "sensor_fk", nullable = false)
     private Sensor sensor;
+
+    public void attachTo(Sensor sensor) {
+        this.sensor = sensor;
+        if (sensor.getMeasurements() != null && !sensor.getMeasurements().contains(this)) {
+            sensor.getMeasurements().add(this);
+        }
+    }
 }

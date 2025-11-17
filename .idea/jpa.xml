@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PersistenceUnitSettings">
+    <persistence-units>
+      <persistence-unit moduleName="ThermoWatch.measurement-storage-service.main" name="ThermoWatch.measurement-storage-service.main" framework="JPA" ormUnit="ThermoWatch.measurement-storage-service.main:ThermoWatch.measurement-storage-service.main" defaultDataSourceId="e3a168dd-9228-4849-a7a8-09e0d30851d0" />
+    </persistence-units>
+  </component>
+</project>
