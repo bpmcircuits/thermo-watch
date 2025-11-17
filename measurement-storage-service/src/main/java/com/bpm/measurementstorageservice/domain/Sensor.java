@@ -6,15 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Builder
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "measurement")
-public class Measurement {
+@Table(name = "sensor")
+public class Sensor {
 
     @Id
     @GeneratedValue
@@ -22,12 +20,14 @@ public class Measurement {
 
     @Column(name = "sensor_id")
     private String sensorId;
-    @Column(name = "temperature")
-    private Double temperature;
-    @Column(name = "humidity")
-    private Double humidity;
-    @Column(name = "dew_point")
-    private Double dewPoint;
+    @Column(name = "sensor_type")
+    private String sensorType;
+    @Column(name = "location")
+    private String location;
     @Column(name = "timestamp")
-    private LocalDateTime timestamp;
+    private String timestamp;
+    @Column(name = "last_seen")
+    private String lastSeen;
+    @Column(name = "is_online")
+    private Boolean isOnline;
 }

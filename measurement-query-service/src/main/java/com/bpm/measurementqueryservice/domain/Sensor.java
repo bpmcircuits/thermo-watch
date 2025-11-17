@@ -1,29 +1,31 @@
 package com.bpm.measurementqueryservice.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Getter;
+
+@NamedQuery(
+        name = "Sensor.findSensorBySensorIdForPeriodOfTime",
+        query = "FROM sensor WHERE sensor_id = :ID AND timestamp <= :TIME"
+)
 
 @Entity
-@Table(name = "measurements")
+@Getter
+@Table(name = "sensor")
 public class Sensor {
 
     @Id
     private Long id;
 
-    @Column(name = "sensor_type")
-    private String sensorType;
     @Column(name = "sensor_id")
     private String sensorId;
+    @Column(name = "sensor_type")
+    private String sensorType;
     @Column(name = "location")
     private String location;
-    @Column(name = "temperature")
-    private String temperature;
-    @Column(name = "humidity")
-    private String humidity;
-    @Column(name = "dew_point")
-    private String dewPoint;
     @Column(name = "timestamp")
     private String timestamp;
+    @Column(name = "last_seen")
+    private String lastSeen;
+    @Column(name = "is_online")
+    private Boolean isOnline;
 }
