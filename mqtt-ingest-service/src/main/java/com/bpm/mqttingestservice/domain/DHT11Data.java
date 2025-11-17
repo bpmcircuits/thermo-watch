@@ -4,7 +4,9 @@ import com.bpm.mqttingestservice.rabbit.dto.SensorMeasurementEvent;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DHT11Data implements SensorData {
@@ -34,9 +36,12 @@ public class DHT11Data implements SensorData {
 
     @Override
     public SensorMeasurementEvent toMeasurementEvent(String topic) {
+
+        String idFromTopic = UUID.nameUUIDFromBytes(topic.getBytes(StandardCharsets.UTF_8)).toString();
+
         return SensorMeasurementEvent.builder()
                 .sensorType(SENSOR_TYPE)
-                .sensorId(null)
+                .sensorId(idFromTopic)
                 .location(topic)
                 .temperature(this.getTemperature())
                 .humidity(this.getHumidity())

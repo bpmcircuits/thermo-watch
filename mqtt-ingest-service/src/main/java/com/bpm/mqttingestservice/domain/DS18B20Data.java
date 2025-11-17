@@ -26,6 +26,7 @@ public class DS18B20Data implements SensorData {
 
     @Override
     public SensorMeasurementEvent toMeasurementEvent(String topic) {
+
         return SensorMeasurementEvent.builder()
                 .sensorType(SENSOR_TYPE)
                 .sensorId(this.getId())

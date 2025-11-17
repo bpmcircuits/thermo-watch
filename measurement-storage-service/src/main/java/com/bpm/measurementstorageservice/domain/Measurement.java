@@ -30,4 +30,8 @@ public class Measurement {
     private Double dewPoint;
     @Column(name = "timestamp")
     private LocalDateTime timestamp;
+
+    @ManyToOne
+    @JoinColumn(name = "sensor_measurement_id")
+    private Sensor sensor;
 }

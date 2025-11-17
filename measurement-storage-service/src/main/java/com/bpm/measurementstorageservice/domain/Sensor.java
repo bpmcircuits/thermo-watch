@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Builder
 @Getter
@@ -13,6 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "sensor")
 public class Sensor {
+
+
 
     @Id
     @GeneratedValue
@@ -27,7 +32,15 @@ public class Sensor {
     @Column(name = "timestamp")
     private String timestamp;
     @Column(name = "last_seen")
-    private String lastSeen;
+    private LocalDateTime lastSeen;
     @Column(name = "is_online")
     private Boolean isOnline;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sensor_measurement_id")
+    private List<Measurement> measurements;
+
+    @ManyToOne
+    @JoinColumn(name = "room_data_id")
+    private RoomData roomData;
 }

@@ -4,11 +4,15 @@ import com.bpm.mqttingestservice.domain.DHT11Data;
 import com.bpm.mqttingestservice.domain.SensorMessage;
 import com.bpm.mqttingestservice.rabbit.service.SensorMeasurementService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class DHT11ProcessingStrategy implements SensorProcessingStrategy {
+
+    private static final Logger logger = LoggerFactory.getLogger(DHT11ProcessingStrategy.class);
 
     private final SensorMeasurementService sensorMeasurementService;
 
@@ -26,14 +30,8 @@ public class DHT11ProcessingStrategy implements SensorProcessingStrategy {
     public void processSensorData(Object data, SensorMessage message) {
         DHT11Data dht11Data = (DHT11Data) data;
 
-        System.out.println("Sensor topic: " + message.getSensorTopic());
-        System.out.println("Processing DHT11 data:");
-        System.out.println("Temperature: " + dht11Data.getTemperature() + message.getTemperatureUnit());
-        System.out.println("Humidity: " + dht11Data.getHumidity() + "%");
-        System.out.println("Dew Point: " + dht11Data.getDewPoint() + message.getTemperatureUnit());
-
         String sensorTopic = message.getSensorTopic();
-
+        logger.info("Got data from sensor topic: {}", sensorTopic);
         sensorMeasurementService.send(sensorTopic, dht11Data);
 
     }

@@ -16,6 +16,8 @@ public class MeasurementStorageListener {
 
     @RabbitListener(queues = "${rabbitmq.queue.name}")
     public void receiveMessage(SensorMeasurementEvent event) {
-        measurementStorageService.store(measurementStorageMapper.mapToMeasurement(event));
+        measurementStorageService.storeSensorData(measurementStorageMapper.mapToSensor(event));
+        measurementStorageService.storeMeasurementData(measurementStorageMapper.mapToMeasurement(event));
+        measurementStorageService.storeRoomData(measurementStorageMapper.mapToRoomData(event));
     }
 }
