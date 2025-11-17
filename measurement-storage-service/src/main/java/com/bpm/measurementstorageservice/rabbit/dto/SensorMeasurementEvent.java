@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record SensorMeasurementEvent(
-        String sensorName,
+        String sensorType,
         String sensorId,
         String location,
         Double temperature,

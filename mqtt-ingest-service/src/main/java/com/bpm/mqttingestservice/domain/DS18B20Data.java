@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DS18B20Data implements SensorData {
+
+    private static final String SENSOR_TYPE = "DS18B20";
+
     @JsonProperty("Id")
     private String id;
     @JsonProperty("Temperature")
@@ -24,8 +27,9 @@ public class DS18B20Data implements SensorData {
     @Override
     public SensorMeasurementEvent toMeasurementEvent(String topic) {
         return SensorMeasurementEvent.builder()
-                .sensorName(topic)
+                .sensorType(SENSOR_TYPE)
                 .sensorId(this.getId())
+                .location(topic)
                 .temperature(this.getTemperature())
                 .humidity(null)
                 .dewPoint(null)

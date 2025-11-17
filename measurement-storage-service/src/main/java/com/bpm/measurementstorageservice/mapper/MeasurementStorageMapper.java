@@ -9,7 +9,7 @@ public class MeasurementStorageMapper {
 
     public Measurement mapToMeasurement(SensorMeasurementEvent sensorMeasurementEvent) {
         return Measurement.builder()
-                .sensorName(sensorMeasurementEvent.sensorName())
+                .sensorType(sensorMeasurementEvent.sensorType())
                 .sensorId(sensorMeasurementEvent.sensorId())
                 .location(sensorMeasurementEvent.location())
                 .temperature(sensorMeasurementEvent.temperature())

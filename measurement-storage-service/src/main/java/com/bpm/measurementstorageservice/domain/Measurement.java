@@ -20,8 +20,8 @@ public class Measurement {
     @GeneratedValue
     private Long id;
 
-    @Column(name = "sensor_name")
-    private String sensorName;
+    @Column(name = "sensor_type")
+    private String sensorType;
     @Column(name = "sensor_id")
     private String sensorId;
     @Column(name = "location")

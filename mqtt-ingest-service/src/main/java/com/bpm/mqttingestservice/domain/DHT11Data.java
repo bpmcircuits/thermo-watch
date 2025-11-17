@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DHT11Data implements SensorData {
+
+    private static final String SENSOR_TYPE = "DHT11";
+
     @JsonProperty("Temperature")
     private double temperature;
 
@@ -21,31 +24,20 @@ public class DHT11Data implements SensorData {
         return temperature;
     }
 
-    public void setTemperature(double temperature) {
-        this.temperature = temperature;
-    }
-
     public double getHumidity() {
         return humidity;
-    }
-
-    public void setHumidity(double humidity) {
-        this.humidity = humidity;
     }
 
     public double getDewPoint() {
         return dewPoint;
     }
 
-    public void setDewPoint(double dewPoint) {
-        this.dewPoint = dewPoint;
-    }
-
     @Override
     public SensorMeasurementEvent toMeasurementEvent(String topic) {
         return SensorMeasurementEvent.builder()
-                .sensorName(topic)
+                .sensorType(SENSOR_TYPE)
                 .sensorId(null)
+                .location(topic)
                 .temperature(this.getTemperature())
                 .humidity(this.getHumidity())
                 .dewPoint(this.getDewPoint())
