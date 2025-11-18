@@ -16,7 +16,8 @@ mqtt:
     id: mqtt-ingest-service
     username: ${MQTT_USER}
     password: ${MQTT_PASS}
-    topic: tele/+/SENSOR
+    sensor-topic: tele/+/SENSOR
+    lwt-topic: tele/+/LWT
   qos: 1
 
 rabbitmq:
@@ -25,4 +26,5 @@ rabbitmq:
   queue:
     name: sensor.queue
   routing:
-    key: sensor.tracking
+    measurement: sensor.tracking
+    availability: sensor.availability

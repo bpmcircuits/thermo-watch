@@ -17,6 +17,8 @@ public class SensorMessage {
 
     private String sensorTopic;
 
+    private String availability;
+
     private final Map<String, Object> sensorData = new HashMap<>();
 
     @JsonAnySetter
@@ -51,6 +53,14 @@ public class SensorMessage {
 
     public void setSensorTopic(String sensorTopic) {
         this.sensorTopic = sensorTopic;
+    }
+
+    public String getAvailability() {
+        return availability;
+    }
+
+    public void setAvailability(String availability) {
+        this.availability = availability;
     }
 
     @Override

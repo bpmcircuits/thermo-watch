@@ -23,8 +23,10 @@ public class MqttConfig {
     private String mqttUsername;
     @Value("${mqtt.client.password}")
     private String mqttPassword;
-    @Value("${mqtt.client.topic}")
-    private String mqttTopic;
+    @Value("${mqtt.client.sensor-topic}")
+    private String sensorTopic;
+    @Value("${mqtt.client.lwt-topic}")
+    private String lwtTopic;
     @Value("${mqtt.qos}")
     private int qos;
 
@@ -58,7 +60,7 @@ public class MqttConfig {
     @Bean
     public MqttPahoMessageDrivenChannelAdapter mqttInbound(MqttPahoClientFactory factory) {
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter(clientId, factory, mqttTopic);
+                new MqttPahoMessageDrivenChannelAdapter(clientId, factory, sensorTopic, lwtTopic);
         adapter.setQos(qos);
         adapter.setOutputChannel(mqttInputChannel());
         adapter.setConverter(mqttMessageConverter());

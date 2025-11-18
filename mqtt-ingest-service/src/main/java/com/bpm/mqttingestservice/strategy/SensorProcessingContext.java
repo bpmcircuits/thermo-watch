@@ -2,6 +2,8 @@ package com.bpm.mqttingestservice.strategy;
 
 import com.bpm.mqttingestservice.domain.SensorMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -10,7 +12,7 @@ import java.util.Map;
 
 @Service
 public class SensorProcessingContext {
-
+    private static final Logger logger = LoggerFactory.getLogger(SensorProcessingContext.class);
     private final Map<String, SensorProcessingStrategy> strategies;
     private final ObjectMapper objectMapper;
 
@@ -24,8 +26,15 @@ public class SensorProcessingContext {
     }
 
     public void processSensorMessage(SensorMessage message) {
-        message.getSensorData().forEach((sensorType, rawData) -> {
+        if (message.getAvailability() != null) {
+            SensorProcessingStrategy strategy = strategies.get("AVAILABILITY");
+            if (strategy != null) {
+                strategy.processSensorData(message.getAvailability(), message);
+            }
+            return;
+        }
 
+        message.getSensorData().forEach((sensorType, rawData) -> {
             SensorProcessingStrategy strategy = strategies.get(sensorType);
 
             if (strategy != null) {
@@ -33,10 +42,10 @@ public class SensorProcessingContext {
                     Object typedData = objectMapper.convertValue(rawData, strategy.getDataClass());
                     strategy.processSensorData(typedData, message);
                 } catch (Exception e) {
-                    System.err.println("Error processing sensor data: " + e.getMessage());
+                    logger.error("Error processing sensor data for type: {}", sensorType, e);
                 }
             } else {
-                System.err.println("No strategy found for sensor type: " + sensorType);
+                logger.warn("No strategy found for sensor type: {}", sensorType);
             }
         });
     }

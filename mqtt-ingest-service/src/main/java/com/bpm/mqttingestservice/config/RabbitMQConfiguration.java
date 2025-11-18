@@ -17,8 +17,10 @@ public class RabbitMQConfiguration {
     private String queueName;
     @Value("${rabbitmq.exchange.name}")
     private String exchangeName;
-    @Value("${rabbitmq.routing.key}")
-    private String routingKey;
+    @Value("${rabbitmq.routing.measurement}")
+    private String measurementRoutingKey;
+    @Value("${rabbitmq.routing.availability}")
+    private String availabilityRoutingKey;
 
     @Bean
     public Queue queue() {
@@ -34,10 +36,17 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
-    public Binding binding() {
+    public Binding measurementBinding() {
         return BindingBuilder.bind(queue())
                 .to(exchange())
-                .with(routingKey);
+                .with(measurementRoutingKey);
+    }
+
+    @Bean
+    public Binding availabilityBinding() {
+        return BindingBuilder.bind(queue())
+                .to(exchange())
+                .with(availabilityRoutingKey);
     }
 
     @Bean
