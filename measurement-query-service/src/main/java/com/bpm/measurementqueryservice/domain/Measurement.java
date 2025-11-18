@@ -1,15 +1,34 @@
 package com.bpm.measurementqueryservice.domain;
 
-import lombok.Builder;
+import jakarta.persistence.*;
 import lombok.Getter;
 
-@Builder
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@NamedQueries({
+        @NamedQuery(
+                name = "Measurement.findMeasurementsBySensorFkForPeriodOfTime",
+                query = "SELECT m FROM Measurement m WHERE m.sensorId = :ID AND m.timestamp >= :AFTER ORDER BY m.timestamp ASC"
+        )
+})
+
+@Entity
 @Getter
+@Table(name = "measurement")
 public class Measurement {
 
-    private String sensorType;
-    private String sensorId;
-    private Double temperature;
-    private Double humidity;
-    private String timestamp;
+    @Id
+    private Long id;
+
+    @Column(name = "temperature", precision = 5, scale = 2)
+    private BigDecimal temperature;
+    @Column(name = "humidity", precision = 5, scale = 2)
+    private BigDecimal humidity;
+    @Column(name = "dew_point", precision = 5, scale = 2)
+    private BigDecimal dewPoint;
+    @Column(name = "timestamp")
+    private LocalDateTime timestamp;
+    @Column(name = "sensor_fk")
+    private Long sensorId;
 }

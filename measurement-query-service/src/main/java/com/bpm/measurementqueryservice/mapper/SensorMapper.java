@@ -15,8 +15,8 @@ public class SensorMapper {
                 .sensorId(sensor.getSensorId())
                 .location(sensor.getLocation())
                 .sensorType(sensor.getSensorType())
-                .lastSeen(null)
-                .isOnline(true)
+                .lastSeen(sensor.getLastSeen())
+                .isOnline(sensor.getIsOnline())
                 .build();
     }
 

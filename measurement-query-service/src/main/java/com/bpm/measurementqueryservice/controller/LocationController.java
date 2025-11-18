@@ -1,15 +1,28 @@
 package com.bpm.measurementqueryservice.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.bpm.measurementqueryservice.dto.MeasurementDTO;
+import com.bpm.measurementqueryservice.mapper.MeasurementMapper;
+import com.bpm.measurementqueryservice.service.MeasurementService;
+import jakarta.websocket.server.PathParam;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/locations")
+@RequiredArgsConstructor
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LocationController {
 
-    @GetMapping
-    public String getLocations() {
-        return "Locations";
+    private final MeasurementService measurementService;
+    private final MeasurementMapper measurementMapper;
+
+
+    @GetMapping("/{location}/measurements")
+    public ResponseEntity<List<MeasurementDTO>> getLocations(@PathVariable String location, @PathParam("hours") int hours) {
+        return ResponseEntity.ok(measurementMapper.mapToMeasurementDTOList(
+                measurementService.getMeasurementsByLocation(location, hours)));
     }
 }

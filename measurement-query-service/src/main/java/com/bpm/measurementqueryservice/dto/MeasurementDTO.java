@@ -1,5 +1,8 @@
 package com.bpm.measurementqueryservice.dto;
 
+import lombok.Builder;
+
+@Builder
 public record MeasurementDTO(
         String id,
         String sensorId,

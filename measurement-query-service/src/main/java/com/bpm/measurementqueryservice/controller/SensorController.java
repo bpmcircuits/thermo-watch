@@ -1,26 +1,30 @@
 package com.bpm.measurementqueryservice.controller;
 
+import com.bpm.measurementqueryservice.domain.Measurement;
 import com.bpm.measurementqueryservice.dto.MeasurementDTO;
 import com.bpm.measurementqueryservice.dto.SensorDTO;
+import com.bpm.measurementqueryservice.mapper.MeasurementMapper;
 import com.bpm.measurementqueryservice.mapper.SensorMapper;
+import com.bpm.measurementqueryservice.service.MeasurementService;
 import com.bpm.measurementqueryservice.service.SensorService;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/sensors")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class SensorController {
 
     private final SensorService sensorService;
     private final SensorMapper sensorMapper;
+
+    private final MeasurementService measurementService;
+    private final MeasurementMapper measurementMapper;
 
     @GetMapping
     public ResponseEntity<List<SensorDTO>> getSensors() {
@@ -36,7 +40,8 @@ public class SensorController {
     }
 
     @GetMapping("/{id}/measurements")
-    public ResponseEntity<MeasurementDTO> getSensorDataById(@PathVariable Long id, @PathParam("hours") int hours) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<List<MeasurementDTO>> getSensorDataById(@PathVariable Long id, @PathParam("hours") int hours) {
+        List<Measurement> measurements = measurementService.getMeasurementsBySensorIdForPeriodOfTime(id, hours);
+        return ResponseEntity.ok(measurementMapper.mapToMeasurementDTOList(measurements));
     }
 }

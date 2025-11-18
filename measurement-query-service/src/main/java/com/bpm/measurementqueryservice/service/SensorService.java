@@ -23,8 +23,7 @@ public class SensorService {
         return sensorRepository.findById(id);
     }
 
-    public List<Measurement> getMeasurementsBySensorIdForPeriodOfTime(Long sensorId, int hours) {
-        return sensorRepository.findMeasurementsBySensorIdForPeriodOfTime(sensorId, hours);
+    public Optional<Sensor> getSensorByLocation(String location) {
+        return sensorRepository.findSensorByLocation(location);
     }
-
 }
