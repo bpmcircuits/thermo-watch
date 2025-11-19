@@ -25,4 +25,5 @@ rabbitmq:
   queue:
     name: sensor.queue
   routing:
-    key: sensor.tracking
+    measurement: sensor.tracking
+    availability: sensor.availability

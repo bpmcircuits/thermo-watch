@@ -3,11 +3,14 @@ package com.bpm.measurementstorageservice.service;
 import com.bpm.measurementstorageservice.domain.Measurement;
 import com.bpm.measurementstorageservice.domain.RoomData;
 import com.bpm.measurementstorageservice.domain.Sensor;
+import com.bpm.measurementstorageservice.rabbit.dto.SensorAvailabilityEvent;
 import com.bpm.measurementstorageservice.rabbit.dto.SensorMeasurementEvent;
 import com.bpm.measurementstorageservice.repository.MeasurementStorageRepository;
 import com.bpm.measurementstorageservice.repository.RoomDataStorageRepository;
 import com.bpm.measurementstorageservice.repository.SensorStorageRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MeasurementStorageService {
 
+    private final static Logger log = LoggerFactory.getLogger(MeasurementStorageService.class);
+
     private final MeasurementStorageRepository measurementRepo;
     private final SensorStorageRepository sensorRepo;
     private final RoomDataStorageRepository roomRepo;
 
     @Transactional
-    public void store(SensorMeasurementEvent event) {
+    public void storeMeasurement(SensorMeasurementEvent event) {
 
         RoomData room = roomRepo.findByLocation(event.location())
                 .orElseGet(() -> RoomData.builder()
@@ -50,5 +55,16 @@ public class MeasurementStorageService {
 
         sensorRepo.save(sensor);
         measurementRepo.save(m);
+    }
+
+    @Transactional
+    public void storeAvailability(SensorAvailabilityEvent event) {
+        Sensor sensor = sensorRepo.findByLocation(event.sensorLocation()).orElseThrow(() -> {
+            log.warn("Received availability event for unknown sensor at location: {}", event.sensorLocation());
+            return new IllegalArgumentException("Sensor not found for location: " + event.sensorLocation());
+        });
+        sensor.setIsOnline(event.status().equalsIgnoreCase("ONLINE"));
+        sensor.setLastSeen(event.timestamp());
+        sensorRepo.save(sensor);
     }
 }
