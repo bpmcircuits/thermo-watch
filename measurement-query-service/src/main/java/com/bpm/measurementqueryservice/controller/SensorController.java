@@ -3,6 +3,8 @@ package com.bpm.measurementqueryservice.controller;
 import com.bpm.measurementqueryservice.domain.Measurement;
 import com.bpm.measurementqueryservice.dto.MeasurementDTO;
 import com.bpm.measurementqueryservice.dto.SensorDTO;
+import com.bpm.measurementqueryservice.exception.MeasurementNotFoundBySensorIdException;
+import com.bpm.measurementqueryservice.exception.SensorNotFoundByIdException;
 import com.bpm.measurementqueryservice.mapper.MeasurementMapper;
 import com.bpm.measurementqueryservice.mapper.SensorMapper;
 import com.bpm.measurementqueryservice.service.MeasurementService;
@@ -32,15 +34,13 @@ public class SensorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SensorDTO> getSensorById(@PathVariable Long id) {
-        return sensorService.getSensorById(id)
-                .map(sensorMapper::mapToSensorDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<SensorDTO> getSensorById(@PathVariable Long id) throws SensorNotFoundByIdException {
+        return ResponseEntity.ok(sensorMapper.mapToSensorDTO(sensorService.getSensorById(id)));
     }
 
     @GetMapping("/{id}/measurements")
-    public ResponseEntity<List<MeasurementDTO>> getSensorDataById(@PathVariable Long id, @PathParam("hours") int hours) {
+    public ResponseEntity<List<MeasurementDTO>> getSensorMeasurementsById(@PathVariable Long id, @PathParam("hours") int hours)
+            throws MeasurementNotFoundBySensorIdException {
         List<Measurement> measurements = measurementService.getMeasurementsBySensorIdForPeriodOfTime(id, hours);
         return ResponseEntity.ok(measurementMapper.mapToMeasurementDTOList(measurements));
     }

@@ -2,6 +2,8 @@ package com.bpm.measurementqueryservice.service;
 
 import com.bpm.measurementqueryservice.domain.Measurement;
 import com.bpm.measurementqueryservice.domain.Sensor;
+import com.bpm.measurementqueryservice.exception.SensorNotFoundByIdException;
+import com.bpm.measurementqueryservice.exception.SensorNotFoundByLocationException;
 import com.bpm.measurementqueryservice.repository.SensorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,11 +21,12 @@ public class SensorService {
         return sensorRepository.findAll();
     }
 
-    public Optional<Sensor> getSensorById(Long id) {
-        return sensorRepository.findById(id);
+    public Sensor getSensorById(Long id) throws SensorNotFoundByIdException {
+        return sensorRepository.findById(id).orElseThrow(() -> new SensorNotFoundByIdException(id));
     }
 
-    public Optional<Sensor> getSensorByLocation(String location) {
-        return sensorRepository.findSensorByLocation(location);
+    public Sensor getSensorByLocation(String location) throws SensorNotFoundByLocationException {
+        return sensorRepository.findSensorByLocation(location).orElseThrow(() ->
+                new SensorNotFoundByLocationException(location));
     }
 }

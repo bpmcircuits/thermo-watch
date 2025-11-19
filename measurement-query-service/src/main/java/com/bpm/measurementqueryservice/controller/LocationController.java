@@ -1,6 +1,8 @@
 package com.bpm.measurementqueryservice.controller;
 
 import com.bpm.measurementqueryservice.dto.MeasurementDTO;
+import com.bpm.measurementqueryservice.exception.MeasurementNotFoundBySensorIdException;
+import com.bpm.measurementqueryservice.exception.SensorNotFoundByLocationException;
 import com.bpm.measurementqueryservice.mapper.MeasurementMapper;
 import com.bpm.measurementqueryservice.service.MeasurementService;
 import jakarta.websocket.server.PathParam;
@@ -21,7 +23,8 @@ public class LocationController {
 
 
     @GetMapping("/{location}/measurements")
-    public ResponseEntity<List<MeasurementDTO>> getLocations(@PathVariable String location, @PathParam("hours") int hours) {
+    public ResponseEntity<List<MeasurementDTO>> getLocations(@PathVariable String location, @PathParam("hours") int hours)
+            throws SensorNotFoundByLocationException, MeasurementNotFoundBySensorIdException {
         return ResponseEntity.ok(measurementMapper.mapToMeasurementDTOList(
                 measurementService.getMeasurementsByLocation(location, hours)));
     }
