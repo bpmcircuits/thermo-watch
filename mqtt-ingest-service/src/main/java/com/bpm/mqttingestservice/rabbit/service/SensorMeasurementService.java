@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class SensorMeasurementService {
                 .sensorLocation(sensorLocation)
                 .status(status)
                 .source("MQTT_LWT")
-                .timestamp(Instant.now())
+                .timestamp(LocalDateTime.now())
                 .build();
         rabbitTemplate.convertAndSend(
                 exchangeName,
