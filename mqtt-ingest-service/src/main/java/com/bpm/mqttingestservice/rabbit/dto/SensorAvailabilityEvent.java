@@ -6,7 +6,7 @@ import java.time.Instant;
 
 @Builder
 public record SensorAvailabilityEvent(
-        String sensorId,
+        String sensorLocation,
         String status,
         String source,
         Instant timestamp

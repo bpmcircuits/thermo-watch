@@ -34,9 +34,9 @@ public class SensorMeasurementService {
                 sensorMeasurementEvent);
     }
 
-    public void sendAvailability(String sensorId, String status) {
+    public void sendAvailability(String sensorLocation, String status) {
         SensorAvailabilityEvent event = SensorAvailabilityEvent.builder()
-                .sensorId(sensorId)
+                .sensorLocation(sensorLocation)
                 .status(status)
                 .source("MQTT_LWT")
                 .timestamp(Instant.now())
