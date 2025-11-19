@@ -1,9 +1,10 @@
 package com.bpm.mqttingestservice.domain;
 
-import com.bpm.mqttingestservice.rabbit.dto.SensorMeasurementEvent;
+import com.bpm.events.dto.SensorMeasurementEvent;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -43,9 +44,9 @@ public class DHT11Data implements SensorData {
                 .sensorType(SENSOR_TYPE)
                 .sensorId(idFromTopic)
                 .location(topic)
-                .temperature(this.getTemperature())
-                .humidity(this.getHumidity())
-                .dewPoint(this.getDewPoint())
+                .temperature(new BigDecimal(this.getTemperature()))
+                .humidity(new BigDecimal(this.getHumidity()))
+                .dewPoint(new BigDecimal(this.getDewPoint()))
                 .timestamp(LocalDateTime.now())
                 .build();
     }

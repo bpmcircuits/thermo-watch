@@ -1,7 +1,7 @@
 package com.bpm.mqttingestservice.rabbit.mapper;
 
+import com.bpm.events.dto.SensorMeasurementEvent;
 import com.bpm.mqttingestservice.domain.SensorData;
-import com.bpm.mqttingestservice.rabbit.dto.SensorMeasurementEvent;
 import org.springframework.stereotype.Service;
 
 @Service

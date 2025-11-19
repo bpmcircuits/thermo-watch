@@ -1,4 +1,4 @@
-package com.bpm.measurementstorageservice.rabbit.dto;
+package com.bpm.events.dto;
 
 import lombok.Builder;
 

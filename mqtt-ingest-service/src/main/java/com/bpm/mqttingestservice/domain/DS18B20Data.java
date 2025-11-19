@@ -1,9 +1,10 @@
 package com.bpm.mqttingestservice.domain;
 
-import com.bpm.mqttingestservice.rabbit.dto.SensorMeasurementEvent;
+import com.bpm.events.dto.SensorMeasurementEvent;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -31,7 +32,7 @@ public class DS18B20Data implements SensorData {
                 .sensorType(SENSOR_TYPE)
                 .sensorId(this.getId())
                 .location(topic)
-                .temperature(this.getTemperature())
+                .temperature(new BigDecimal(this.getTemperature()))
                 .humidity(null)
                 .dewPoint(null)
                 .timestamp(LocalDateTime.now())

@@ -1,7 +1,7 @@
 package com.bpm.measurementstorageservice.rabbit.listener;
 
-import com.bpm.measurementstorageservice.rabbit.dto.SensorAvailabilityEvent;
-import com.bpm.measurementstorageservice.rabbit.dto.SensorMeasurementEvent;
+import com.bpm.events.dto.SensorAvailabilityEvent;
+import com.bpm.events.dto.SensorMeasurementEvent;
 import com.bpm.measurementstorageservice.service.MeasurementStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;

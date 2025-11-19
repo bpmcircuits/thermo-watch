@@ -1,10 +1,10 @@
 package com.bpm.measurementstorageservice.service;
 
+import com.bpm.events.dto.SensorAvailabilityEvent;
+import com.bpm.events.dto.SensorMeasurementEvent;
 import com.bpm.measurementstorageservice.domain.Measurement;
 import com.bpm.measurementstorageservice.domain.RoomData;
 import com.bpm.measurementstorageservice.domain.Sensor;
-import com.bpm.measurementstorageservice.rabbit.dto.SensorAvailabilityEvent;
-import com.bpm.measurementstorageservice.rabbit.dto.SensorMeasurementEvent;
 import com.bpm.measurementstorageservice.repository.MeasurementStorageRepository;
 import com.bpm.measurementstorageservice.repository.RoomDataStorageRepository;
 import com.bpm.measurementstorageservice.repository.SensorStorageRepository;
@@ -59,12 +59,12 @@ public class MeasurementStorageService {
 
     @Transactional
     public void storeAvailability(SensorAvailabilityEvent event) {
-        Sensor sensor = sensorRepo.findByLocation(event.sensorLocation()).orElseThrow(() -> {
-            log.warn("Received availability event for unknown sensor at location: {}", event.sensorLocation());
-            return new IllegalArgumentException("Sensor not found for location: " + event.sensorLocation());
-        });
-        sensor.setIsOnline(event.status().equalsIgnoreCase("ONLINE"));
-        sensor.setLastSeen(event.timestamp());
-        sensorRepo.save(sensor);
+        Sensor sensor = sensorRepo.findByLocation(event.sensorLocation()).orElse(null);
+
+        if (sensor != null) {
+            sensor.setIsOnline(event.status().equalsIgnoreCase("ONLINE"));
+            sensor.setLastSeen(event.timestamp());
+            sensorRepo.save(sensor);
+        }
     }
 }
