@@ -9,16 +9,20 @@ import com.bpm.measurementqueryservice.mapper.MeasurementMapper;
 import com.bpm.measurementqueryservice.mapper.SensorMapper;
 import com.bpm.measurementqueryservice.service.MeasurementService;
 import com.bpm.measurementqueryservice.service.SensorService;
-import jakarta.websocket.server.PathParam;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/sensors")
 @RequiredArgsConstructor
+@Validated
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class SensorController {
 
@@ -39,8 +43,9 @@ public class SensorController {
     }
 
     @GetMapping("/{id}/measurements")
-    public ResponseEntity<List<MeasurementDTO>> getSensorMeasurementsById(@PathVariable Long id, @PathParam("hours") int hours)
-            throws MeasurementNotFoundBySensorIdException {
+    public ResponseEntity<List<MeasurementDTO>> getSensorMeasurementsById(
+            @PathVariable Long id,
+            @RequestParam(value = "hours", defaultValue = "24") @Min(0) @Max(720) Duration hours) {
         List<Measurement> measurements = measurementService.getMeasurementsBySensorIdForPeriodOfTime(id, hours);
         return ResponseEntity.ok(measurementMapper.mapToMeasurementDTOList(measurements));
     }

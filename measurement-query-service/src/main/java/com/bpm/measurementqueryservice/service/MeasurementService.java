@@ -8,6 +8,7 @@ import com.bpm.measurementqueryservice.repository.MeasurementRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,15 +19,13 @@ public class MeasurementService {
     private final MeasurementRepository measurementRepository;
     private final SensorService sensorService;
 
-    public List<Measurement> getMeasurementsBySensorIdForPeriodOfTime(Long sensorFk, int hours)
-            throws MeasurementNotFoundBySensorIdException {
-        LocalDateTime after = LocalDateTime.now().minusHours(hours);
-        return measurementRepository.findMeasurementsBySensorFkForPeriodOfTime(sensorFk, after).orElseThrow(
-                () -> new MeasurementNotFoundBySensorIdException(sensorFk));
+    public List<Measurement> getMeasurementsBySensorIdForPeriodOfTime(Long sensorFk, Duration hours) {
+        LocalDateTime after = LocalDateTime.now().minus(hours);
+        return measurementRepository.findMeasurementsBySensorFkForPeriodOfTime(sensorFk, after);
     }
 
-    public List<Measurement> getMeasurementsByLocation(String location, int hours)
-            throws SensorNotFoundByLocationException, MeasurementNotFoundBySensorIdException {
+    public List<Measurement> getMeasurementsByLocation(String location, Duration hours)
+            throws SensorNotFoundByLocationException {
         Sensor sensor = sensorService.getSensorByLocation(location);
         return getMeasurementsBySensorIdForPeriodOfTime(sensor.getId(), hours);
     }

@@ -5,16 +5,20 @@ import com.bpm.measurementqueryservice.exception.MeasurementNotFoundBySensorIdEx
 import com.bpm.measurementqueryservice.exception.SensorNotFoundByLocationException;
 import com.bpm.measurementqueryservice.mapper.MeasurementMapper;
 import com.bpm.measurementqueryservice.service.MeasurementService;
-import jakarta.websocket.server.PathParam;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/locations")
 @RequiredArgsConstructor
+@Validated
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class LocationController {
 
@@ -23,8 +27,10 @@ public class LocationController {
 
 
     @GetMapping("/{location}/measurements")
-    public ResponseEntity<List<MeasurementDTO>> getLocations(@PathVariable String location, @PathParam("hours") int hours)
-            throws SensorNotFoundByLocationException, MeasurementNotFoundBySensorIdException {
+    public ResponseEntity<List<MeasurementDTO>> getLocations(
+            @PathVariable String location,
+            @RequestParam("hours") @Min(0) @Max(720) Duration hours)
+            throws SensorNotFoundByLocationException {
         return ResponseEntity.ok(measurementMapper.mapToMeasurementDTOList(
                 measurementService.getMeasurementsByLocation(location, hours)));
     }

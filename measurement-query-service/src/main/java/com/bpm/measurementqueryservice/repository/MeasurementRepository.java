@@ -11,5 +11,5 @@ import java.util.Optional;
 
 public interface MeasurementRepository extends JpaRepository<Measurement, Long> {
     @Query
-    Optional<List<Measurement>> findMeasurementsBySensorFkForPeriodOfTime(@Param("ID") Long sensorFk, @Param("AFTER")LocalDateTime after);
+    List<Measurement> findMeasurementsBySensorFkForPeriodOfTime(@Param("ID") Long sensorFk, @Param("AFTER")LocalDateTime after);
 }
