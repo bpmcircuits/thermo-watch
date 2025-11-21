@@ -1,6 +1,3 @@
-server:
-  port: 8081
-
 spring:
   application:
     name: mqtt-ingest-service
@@ -28,3 +25,6 @@ rabbitmq:
   routing:
     measurement: sensor.tracking
     availability: sensor.availability
+
+server:
+  port: 8082

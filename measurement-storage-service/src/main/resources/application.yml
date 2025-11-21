@@ -27,3 +27,6 @@ rabbitmq:
   routing:
     measurement: sensor.tracking
     availability: sensor.availability
+
+server:
+  port: 8083
