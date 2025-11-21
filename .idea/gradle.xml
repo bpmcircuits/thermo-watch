@@ -10,7 +10,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/config-service" />
-            <option value="$PROJECT_DIR$/discovery-server" />
+            <option value="$PROJECT_DIR$/discovery-service" />
             <option value="$PROJECT_DIR$/events" />
             <option value="$PROJECT_DIR$/gateway-service" />
             <option value="$PROJECT_DIR$/measurement-query-service" />
