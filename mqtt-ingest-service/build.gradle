@@ -28,6 +28,9 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "io.micrometer:micrometer-registry-prometheus"
 
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
+
     implementation "com.fasterxml.jackson.core:jackson-databind"
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.20.1'
     implementation 'org.apache.commons:commons-lang3:3.18.0'

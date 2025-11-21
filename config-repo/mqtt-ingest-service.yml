@@ -1,8 +1,6 @@
 spring:
   application:
     name: measurement-storage-service
-  config:
-    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:8081}
   rabbitmq:
     host: localhost
     port: 5672
@@ -32,8 +30,8 @@ rabbitmq:
 
 eureka:
   client:
-    service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://localhost:8761/eureka}
+    region: default
+    registryFetchIntervalSeconds: 5
 
 server:
   port: 8083
