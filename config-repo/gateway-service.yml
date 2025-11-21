@@ -9,18 +9,10 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
-        - id: mqs-sensors
+        - id: measurement-query-service
           uri: lb://measurement-query-service
           predicates:
-            - Path=/api/v1/sensors/**
-        - id: mqs-locations
-          uri: lb://measurement-query-service
-          predicates:
-            - Path=/api/v1/locations/**
-        - id: mqs-rooms
-          uri: lb://measurement-query-service
-          predicates:
-            - Path=/api/v1/rooms/**
+            - Path=/api/v1/sensors/**, /api/v1/locations/**, /api/v1/rooms/**
 
 server:
   port: 8080

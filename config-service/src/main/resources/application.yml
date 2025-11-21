@@ -5,7 +5,7 @@ spring:
     config:
       server:
         git:
-          uri: file:../
+          uri: https://github.com/bpmcircuits/thermo-watch.git
           default-label: main
           search-paths:
             - config-repo
