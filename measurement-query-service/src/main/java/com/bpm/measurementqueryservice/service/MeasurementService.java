@@ -19,12 +19,12 @@ public class MeasurementService {
     private final MeasurementRepository measurementRepository;
     private final SensorService sensorService;
 
-    public List<Measurement> getMeasurementsBySensorIdForPeriodOfTime(Long sensorFk, Duration hours) {
-        LocalDateTime after = LocalDateTime.now().minus(hours);
+    public List<Measurement> getMeasurementsBySensorIdForPeriodOfTime(Long sensorFk, Integer hours) {
+        LocalDateTime after = LocalDateTime.now().minus(Duration.ofHours(hours));
         return measurementRepository.findMeasurementsBySensorFkForPeriodOfTime(sensorFk, after);
     }
 
-    public List<Measurement> getMeasurementsByLocation(String location, Duration hours)
+    public List<Measurement> getMeasurementsByLocation(String location, Integer hours)
             throws SensorNotFoundByLocationException {
         Sensor sensor = sensorService.getSensorByLocation(location);
         return getMeasurementsBySensorIdForPeriodOfTime(sensor.getId(), hours);

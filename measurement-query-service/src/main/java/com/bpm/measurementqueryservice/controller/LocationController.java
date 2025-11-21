@@ -29,7 +29,7 @@ public class LocationController {
     @GetMapping("/{location}/measurements")
     public ResponseEntity<List<MeasurementDTO>> getLocations(
             @PathVariable String location,
-            @RequestParam("hours") @Min(0) @Max(720) Duration hours)
+            @RequestParam("hours") @Min(0) @Max(720) Integer hours)
             throws SensorNotFoundByLocationException {
         return ResponseEntity.ok(measurementMapper.mapToMeasurementDTOList(
                 measurementService.getMeasurementsByLocation(location, hours)));

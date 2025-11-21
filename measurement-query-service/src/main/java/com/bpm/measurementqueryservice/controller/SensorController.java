@@ -45,7 +45,7 @@ public class SensorController {
     @GetMapping("/{id}/measurements")
     public ResponseEntity<List<MeasurementDTO>> getSensorMeasurementsById(
             @PathVariable Long id,
-            @RequestParam(value = "hours", defaultValue = "24") @Min(0) @Max(720) Duration hours) {
+            @RequestParam(value = "hours", defaultValue = "24") @Min(0) @Max(720) Integer hours) {
         List<Measurement> measurements = measurementService.getMeasurementsBySensorIdForPeriodOfTime(id, hours);
         return ResponseEntity.ok(measurementMapper.mapToMeasurementDTOList(measurements));
     }
