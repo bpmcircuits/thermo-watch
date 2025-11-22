@@ -28,7 +28,7 @@ services:
     restart: always
     environment:
       RABBITMQ_USER: ${RABBITMQ_USER}
-      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_PASS: ${RABBITMQ_PASS}
     ports:
       - "5672:5672"          # AMQP
       - "15672:15672"        # Management UI
@@ -114,7 +114,7 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       RABBITMQ_USER: ${RABBITMQ_USER}
-      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
+      RABBITMQ_PASS: ${RABBITMQ_PASS}
     ports:
       - "8083:8083"
     depends_on:
@@ -172,8 +172,8 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-service:8081
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka
-      username: ${RABBITMQ_USER}
-      password: ${RABBITMQ_PASSWORD}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASS: ${RABBITMQ_PASS}
       MQTT_BROKER: tcp://10.20.10.101:1883
       MQTT_USER: ${MQTT_USER}
       MQTT_PASS: ${MQTT_PASS}

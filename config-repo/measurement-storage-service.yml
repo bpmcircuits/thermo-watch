@@ -5,7 +5,7 @@ spring:
     host: localhost
     port: 5672
     username: ${RABBITMQ_USER}
-    password: ${RABBITMQ_PASSWORD}
+    password: ${RABBITMQ_PASS}
 
   datasource:
     url: jdbc:postgresql://localhost:5432/measurement-db
