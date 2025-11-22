@@ -2,7 +2,7 @@ spring:
   application:
     name: measurement-query-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/measurement-db
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/measurement_db}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
