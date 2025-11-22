@@ -1,10 +1,16 @@
-FROM gradle:8.9-jdk21 AS build
+# ---- build stage ----
+FROM eclipse-temurin:21-jdk AS build
 WORKDIR /app
 
-COPY build.gradle ./
-COPY src ./src
+# Najpierw wrapper i pliki konfiguracyjne dla cache
+COPY gradlew settings.gradle build.gradle /app/
+COPY gradle /app/gradle
 
-RUN gradle --no-daemon clean build
+# Potem całe źródła
+COPY . /app
+
+# Zbuduj tylko wybrany moduł
+RUN ./gradlew :measurement-storage-service:bootJar -x test --no-daemon build
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app
@@ -15,5 +21,6 @@ RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 RUN addgroup --system app && adduser --system --ingroup app app
 USER app
 
-COPY --from=build /app/build/libs/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+COPY --from=build /app/measurement-storage-service/build/libs/*-SNAPSHOT.jar /app/app.jar
+EXPOSE 8083
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

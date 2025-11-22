@@ -4,9 +4,9 @@ spring:
   config:
     import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:8081}
   datasource:
-    url: jdbc:postgresql://localhost:5432/measurement-db
-    username: measurement
-    password: pass123
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/measurement_db}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -16,10 +16,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 eureka:
-  instance:
-    prefer-ip-address: true
-    ip-address: 127.0.0.1
-    hostname: localhost
   client:
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://localhost:8761/eureka}

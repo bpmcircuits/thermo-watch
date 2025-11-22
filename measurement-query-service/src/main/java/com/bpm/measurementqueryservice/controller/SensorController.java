@@ -3,7 +3,6 @@ package com.bpm.measurementqueryservice.controller;
 import com.bpm.measurementqueryservice.domain.Measurement;
 import com.bpm.measurementqueryservice.dto.MeasurementDTO;
 import com.bpm.measurementqueryservice.dto.SensorDTO;
-import com.bpm.measurementqueryservice.exception.MeasurementNotFoundBySensorIdException;
 import com.bpm.measurementqueryservice.exception.SensorNotFoundByIdException;
 import com.bpm.measurementqueryservice.mapper.MeasurementMapper;
 import com.bpm.measurementqueryservice.mapper.SensorMapper;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
 import java.util.List;
 
 @RestController

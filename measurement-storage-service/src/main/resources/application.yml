@@ -6,13 +6,13 @@ spring:
   rabbitmq:
     host: localhost
     port: 5672
-    username: guest
-    password: guest
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/measurement-db
-    username: measurement
-    password: pass123
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/measurement_db}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
