@@ -8,7 +8,7 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB:measurement_db}
+      POSTGRES_DB: measurement_db
     ports:
       - "5555:5432"
     volumes:
@@ -27,8 +27,8 @@ services:
     container_name: rabbitmq
     restart: always
     environment:
-      RABBITMQ_USER: ${RABBITMQ_USER}
-      RABBITMQ_PASS: ${RABBITMQ_PASS}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
     ports:
       - "5672:5672"          # AMQP
       - "15672:15672"        # Management UI
@@ -36,7 +36,8 @@ services:
       test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
     networks:
       - backend
 
@@ -111,10 +112,12 @@ services:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-service:8081
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/measurement_db
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      RABBITMQ_USER: ${RABBITMQ_USER}
-      RABBITMQ_PASS: ${RABBITMQ_PASS}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
     ports:
       - "8083:8083"
     depends_on:
@@ -144,8 +147,8 @@ services:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-service:8081
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/measurement_db
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "8084:8084"
     depends_on:
@@ -172,9 +175,11 @@ services:
     environment:
       SPRING_CONFIG_IMPORT: optional:configserver:http://config-service:8081
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka
-      RABBITMQ_USER: ${RABBITMQ_USER}
-      RABBITMQ_PASS: ${RABBITMQ_PASS}
-      MQTT_BROKER: tcp://10.20.10.101:1883
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USER}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASS}
+      MQTT_BROKER: ${MQTT_BROKER}
       MQTT_USER: ${MQTT_USER}
       MQTT_PASS: ${MQTT_PASS}
     ports:
