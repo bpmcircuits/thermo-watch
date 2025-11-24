@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -43,4 +44,23 @@ public class Sensor {
             roomData.getSensors().add(this);
         }
     }
+
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Sensor sensor = (Sensor) o;
+//        return Objects.equals(id, sensor.id) &&
+//                Objects.equals(sensorId, sensor.sensorId) &&
+//                Objects.equals(sensorType, sensor.sensorType) &&
+//                Objects.equals(location, sensor.location) &&
+//                Objects.equals(lastSeen, sensor.lastSeen) &&
+//                Objects.equals(isOnline, sensor.isOnline) &&
+//                Objects.equals(measurements, sensor.measurements) &&
+//                Objects.equals(roomData, sensor.roomData);
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(id, sensorId, sensorType, location, lastSeen, isOnline, measurements, roomData);
+//    }
 }
