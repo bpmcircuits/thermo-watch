@@ -5,6 +5,12 @@ spring:
     username: sa
     password:
 
+  cloud:
+    discovery:
+      enabled: false
+    config:
+      enabled: false
+
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -24,6 +30,10 @@ spring:
     port: 5672
     username: guest
     password: guest
+
+eureka:
+  client:
+    enabled: false
 
 rabbitmq:
   queue:

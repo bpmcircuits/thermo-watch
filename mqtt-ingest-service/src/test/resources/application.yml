@@ -1,0 +1,44 @@
+spring:
+  cloud:
+    discovery:
+      enabled: false
+    config:
+      enabled: false
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        auto-startup: false
+    template:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false
+
+mqtt:
+  broker: tcp://test:1883
+  client:
+    id: mqtt-ingest-service
+    username: user
+    password: pass
+    sensor-topic: tele/+/SENSOR
+    lwt-topic: tele/+/LWT
+  qos: 1
+
+rabbitmq:
+  exchange:
+    name: sensor.exchange
+  queue:
+    name: sensor.queue
+  routing:
+    measurement: sensor.tracking
+    availability: sensor.availability
+
+logging:
+  level:
+    com.bpm.mqttingestservice: DEBUG
+    org.eclipse.paho.client.mqttv3: INFO
