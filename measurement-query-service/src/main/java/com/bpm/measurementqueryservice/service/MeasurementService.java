@@ -2,7 +2,6 @@ package com.bpm.measurementqueryservice.service;
 
 import com.bpm.measurementqueryservice.domain.Measurement;
 import com.bpm.measurementqueryservice.domain.Sensor;
-import com.bpm.measurementqueryservice.exception.MeasurementNotFoundBySensorIdException;
 import com.bpm.measurementqueryservice.exception.SensorNotFoundByLocationException;
 import com.bpm.measurementqueryservice.repository.MeasurementRepository;
 import lombok.RequiredArgsConstructor;

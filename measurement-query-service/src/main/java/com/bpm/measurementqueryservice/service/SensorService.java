@@ -1,6 +1,5 @@
 package com.bpm.measurementqueryservice.service;
 
-import com.bpm.measurementqueryservice.domain.Measurement;
 import com.bpm.measurementqueryservice.domain.Sensor;
 import com.bpm.measurementqueryservice.exception.SensorNotFoundByIdException;
 import com.bpm.measurementqueryservice.exception.SensorNotFoundByLocationException;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
