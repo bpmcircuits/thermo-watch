@@ -108,7 +108,7 @@ class AvailabilityProcessingStrategyTest {
     void shouldIgnoreDataParameter() {
         // Given
         sensorMessage.setAvailability("Online");
-        Object someData = new Object();
+        String someData = "";
 
         // When
         strategy.processSensorData(someData, sensorMessage);

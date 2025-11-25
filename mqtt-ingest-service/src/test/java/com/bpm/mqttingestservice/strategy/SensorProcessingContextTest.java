@@ -24,13 +24,13 @@ import static org.mockito.Mockito.*;
 class SensorProcessingContextTest {
 
     @Mock
-    private SensorProcessingStrategy dht11Strategy;
+    private SensorProcessingStrategy<DHT11Data> dht11Strategy;
 
     @Mock
-    private SensorProcessingStrategy ds18b20Strategy;
+    private SensorProcessingStrategy<DS18B20Data> ds18b20Strategy;
 
     @Mock
-    private SensorProcessingStrategy availabilityStrategy;
+    private SensorProcessingStrategy<String> availabilityStrategy;
 
     @Mock
     private ObjectMapper objectMapper;
@@ -43,7 +43,7 @@ class SensorProcessingContextTest {
         when(ds18b20Strategy.getSensorType()).thenReturn("DS18B20");
         when(availabilityStrategy.getSensorType()).thenReturn("AVAILABILITY");
 
-        List<SensorProcessingStrategy> strategies = List.of(dht11Strategy, ds18b20Strategy, availabilityStrategy);
+        List<SensorProcessingStrategy<?>> strategies = List.of(dht11Strategy, ds18b20Strategy, availabilityStrategy);
         context = new SensorProcessingContext(strategies, objectMapper);
 
         clearInvocations(dht11Strategy, ds18b20Strategy, availabilityStrategy);

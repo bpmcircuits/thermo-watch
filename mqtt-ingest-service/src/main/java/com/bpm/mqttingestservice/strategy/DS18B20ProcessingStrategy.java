@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class DS18B20ProcessingStrategy implements SensorProcessingStrategy {
+public class DS18B20ProcessingStrategy implements SensorProcessingStrategy<DS18B20Data> {
     private static final Logger logger = LoggerFactory.getLogger(DS18B20ProcessingStrategy.class);
 
     private final SensorMeasurementService sensorMeasurementService;
@@ -21,16 +21,14 @@ public class DS18B20ProcessingStrategy implements SensorProcessingStrategy {
     }
 
     @Override
-    public Class<?> getDataClass() {
+    public Class<DS18B20Data> getDataClass() {
         return DS18B20Data.class;
     }
 
     @Override
-    public void processSensorData(Object sensorData, SensorMessage message) {
-        DS18B20Data ds18B20Data = (DS18B20Data) sensorData;
-
+    public void processSensorData(DS18B20Data sensorData, SensorMessage message) {
         String sensorTopic = message.getSensorTopic();
         logger.info("Got data from sensor topic: {}", sensorTopic);
-        sensorMeasurementService.send(sensorTopic, ds18B20Data);
+        sensorMeasurementService.send(sensorTopic, sensorData);
     }
 }

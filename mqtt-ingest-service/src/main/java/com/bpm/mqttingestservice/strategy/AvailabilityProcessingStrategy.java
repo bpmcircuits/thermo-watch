@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class AvailabilityProcessingStrategy implements SensorProcessingStrategy {
+public class AvailabilityProcessingStrategy implements SensorProcessingStrategy<String> {
 
     private static final Logger logger = LoggerFactory.getLogger(AvailabilityProcessingStrategy.class);
     private final SensorMeasurementService sensorMeasurementService;
@@ -20,12 +20,12 @@ public class AvailabilityProcessingStrategy implements SensorProcessingStrategy 
     }
 
     @Override
-    public Class<?> getDataClass() {
+    public Class<String> getDataClass() {
         return String.class;
     }
 
     @Override
-    public void processSensorData(Object data, SensorMessage message) {
+    public void processSensorData(String data, SensorMessage message) {
         String availability = message.getAvailability();
         String sensorTopic = message.getSensorTopic();
 

@@ -1,5 +1,6 @@
 package com.bpm.mqttingestservice.strategy;
 
+import com.bpm.mqttingestservice.domain.DHT11Data;
 import com.bpm.mqttingestservice.domain.DS18B20Data;
 import com.bpm.mqttingestservice.domain.SensorMessage;
 import com.bpm.mqttingestservice.rabbit.service.SensorMeasurementService;
@@ -24,6 +25,7 @@ class DS18B20ProcessingStrategyTest {
 
     private SensorMessage sensorMessage;
     private DS18B20Data ds18B20Data;
+    private DHT11Data dht11Data;
 
     @BeforeEach
     void setUp() {
@@ -94,24 +96,10 @@ class DS18B20ProcessingStrategyTest {
 
     @Test
     void shouldCastDataToDS18B20Data() {
-        // Given
-        Object genericData = ds18B20Data;
-
-        // When
-        strategy.processSensorData(genericData, sensorMessage);
+        // Given & When
+        strategy.processSensorData(ds18B20Data, sensorMessage);
 
         // Then
         verify(sensorMeasurementService).send("temp_bathroom", ds18B20Data);
-    }
-
-    @Test
-    void shouldThrowExceptionWhenDataIsNotDS18B20Data() {
-        // Given
-        Object invalidData = "invalid data";
-
-        // When & Then
-        assertThrows(ClassCastException.class, () ->
-                strategy.processSensorData(invalidData, sensorMessage)
-        );
     }
 }

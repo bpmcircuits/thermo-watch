@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class DHT11ProcessingStrategy implements SensorProcessingStrategy {
+public class DHT11ProcessingStrategy implements SensorProcessingStrategy<DHT11Data> {
 
     private static final Logger logger = LoggerFactory.getLogger(DHT11ProcessingStrategy.class);
 
@@ -22,17 +22,16 @@ public class DHT11ProcessingStrategy implements SensorProcessingStrategy {
     }
 
     @Override
-    public Class<?> getDataClass() {
+    public Class<DHT11Data> getDataClass() {
         return DHT11Data.class;
     }
 
     @Override
-    public void processSensorData(Object data, SensorMessage message) {
-        DHT11Data dht11Data = (DHT11Data) data;
+    public void processSensorData(DHT11Data data, SensorMessage message) {
 
         String sensorTopic = message.getSensorTopic();
         logger.info("Got data from sensor topic: {}", sensorTopic);
-        sensorMeasurementService.send(sensorTopic, dht11Data);
+        sensorMeasurementService.send(sensorTopic, data);
 
     }
 }

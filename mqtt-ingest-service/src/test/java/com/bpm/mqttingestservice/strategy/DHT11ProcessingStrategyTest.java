@@ -94,24 +94,10 @@ class DHT11ProcessingStrategyTest {
 
     @Test
     void shouldCastDataToDHT11Data() {
-        // Given
-        Object genericData = dht11Data;
-
-        // When
-        strategy.processSensorData(genericData, sensorMessage);
+        // Given & When
+        strategy.processSensorData(dht11Data, sensorMessage);
 
         // Then
         verify(sensorMeasurementService).send("temp_bathroom", dht11Data);
-    }
-
-    @Test
-    void shouldThrowExceptionWhenDataIsNotDHT11Data() {
-        // Given
-        Object invalidData = "invalid data";
-
-        // When & Then
-        assertThrows(ClassCastException.class, () ->
-                strategy.processSensorData(invalidData, sensorMessage)
-        );
     }
 }
