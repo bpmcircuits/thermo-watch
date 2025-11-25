@@ -13,20 +13,32 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 public class MqttMessageHandler {
-    private final static Logger log = LoggerFactory.getLogger(MqttMessageHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(MqttMessageHandler.class);
+
+    private static final String MQTT_TOPIC_HEADER = "mqtt_receivedTopic";
+
     private final MqttIngestService ingestService;
 
     @ServiceActivator(inputChannel = "mqttInputChannel")
     public void handleMessage(Message<?> message) {
-        try {
-            String payload = message.getPayload().toString();
-            String sensorTopic = (Objects.requireNonNull(
-                    message.getHeaders().get("mqtt_receivedTopic"))
-                    .toString());
-
-            ingestService.ingest(sensorTopic, payload);
-        } catch (Exception e) {
-            log.error("Error processing MQTT message: {}", e.getMessage());
+        String topic = extractTopic(message);
+        if (topic == null || topic.isBlank()) {
+            log.warn("Skipping MQTT message – missing or blank topic header '{}'", MQTT_TOPIC_HEADER);
+            return;
         }
+
+        message.getPayload();
+        String payload = message.getPayload().toString();
+
+        try {
+            ingestService.ingest(topic, payload);
+        } catch (RuntimeException e) {
+            log.error("Error processing MQTT message for topic '{}'", topic, e);
+        }
+    }
+
+    private String extractTopic(Message<?> message) {
+        Object headerValue = message.getHeaders().get(MQTT_TOPIC_HEADER);
+        return headerValue instanceof String ? (String) headerValue : null;
     }
 }
