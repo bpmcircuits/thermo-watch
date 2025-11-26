@@ -55,7 +55,6 @@ class MeasurementStorageListenerTest {
         SensorAvailabilityEvent event = SensorAvailabilityEvent.builder()
                 .source("DHT11-001")
                 .status("online")
-                .sensorLocation("Living Room")
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -72,7 +71,6 @@ class MeasurementStorageListenerTest {
         SensorAvailabilityEvent event = SensorAvailabilityEvent.builder()
                 .source("DHT11-002")
                 .status("offline")
-                .sensorLocation("Bedroom")
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -148,7 +146,6 @@ class MeasurementStorageListenerTest {
         SensorAvailabilityEvent event = SensorAvailabilityEvent.builder()
                 .source("DHT11-001")
                 .status("online")
-                .sensorLocation("Living Room")
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -194,16 +191,14 @@ class MeasurementStorageListenerTest {
         // Given
         LocalDateTime now = LocalDateTime.now();
         SensorAvailabilityEvent event1 = SensorAvailabilityEvent.builder()
-                .source("DHT11-001")
+                .sensorId("DHT11-001")
                 .status("online")
-                .sensorLocation("Living Room")
                 .timestamp(now)
                 .build();
 
         SensorAvailabilityEvent event2 = SensorAvailabilityEvent.builder()
-                .source("DHT11-001")
+                .sensorId("DHT11-001")
                 .status("offline")
-                .sensorLocation("Living Room")
                 .timestamp(now.plusMinutes(5))
                 .build();
 

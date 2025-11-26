@@ -59,7 +59,7 @@ public class MeasurementStorageService {
 
     @Transactional
     public void storeAvailability(SensorAvailabilityEvent event) {
-        Sensor sensor = sensorRepo.findByLocation(event.sensorId()).orElse(null);
+        Sensor sensor = sensorRepo.findBySensorId(event.sensorId()).orElse(null);
 
         if (sensor != null) {
             sensor.setIsOnline(event.status().equalsIgnoreCase("ONLINE"));

@@ -4,6 +4,7 @@ import com.bpm.measurementqueryservice.domain.Sensor;
 import com.bpm.measurementqueryservice.dto.SensorDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -15,7 +16,7 @@ public class SensorMapper {
                 .sensorId(sensor.getSensorId())
                 .location(sensor.getLocation())
                 .sensorType(sensor.getSensorType())
-                .lastSeen(sensor.getLastSeen())
+                .lastSeen(getLocalDateTimeFormatted(sensor))
                 .isOnline(sensor.getIsOnline())
                 .build();
     }
@@ -24,5 +25,10 @@ public class SensorMapper {
         return sensors.stream()
                 .map(this::mapToSensorDTO)
                 .toList();
+    }
+
+    private String getLocalDateTimeFormatted(Sensor sensor) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return sensor.getLastSeen().format(formatter);
     }
 }

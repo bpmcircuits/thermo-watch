@@ -28,9 +28,6 @@ public class SensorMeasurementService {
     @Value("${rabbitmq.routing.availability}")
     private String availabilityRoutingKey;
 
-    /**
-     * Wysyła zdarzenie pomiaru na podstawie całej wiadomości MQTT oraz danych sensora.
-     */
     public void sendMeasurement(SensorMessage message, SensorData sensorData) {
         SensorMeasurementEvent sensorMeasurementEvent =
                 sensorMeasurementMapper.mapToSensorMeasurementEvent(message, sensorData);

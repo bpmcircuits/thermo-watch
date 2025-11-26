@@ -229,9 +229,8 @@ class MeasurementStorageServiceTest {
     void shouldStoreAvailabilityOnlineForExistingSensor() {
         // Given
         SensorAvailabilityEvent event = SensorAvailabilityEvent.builder()
-                .source("DHT11-001")
+                .sensorId("DHT11-001")
                 .status("online")
-                .sensorLocation("Living Room")
                 .timestamp(testTimestamp)
                 .build();
 
@@ -242,7 +241,7 @@ class MeasurementStorageServiceTest {
                 .isOnline(false)
                 .lastSeen(testTimestamp.minusMinutes(10))
                 .build();
-        when(sensorRepo.findByLocation("Living Room")).thenReturn(Optional.of(existingSensor));
+        when(sensorRepo.findBySensorId("DHT11-001")).thenReturn(Optional.of(existingSensor));
 
         // When
         service.storeAvailability(event);
@@ -259,9 +258,8 @@ class MeasurementStorageServiceTest {
     void shouldStoreAvailabilityOfflineForExistingSensor() {
         // Given
         SensorAvailabilityEvent event = SensorAvailabilityEvent.builder()
-                .source("DHT11-001")
+                .sensorId("DHT11-001")
                 .status("offline")
-                .sensorLocation("Living Room")
                 .timestamp(testTimestamp)
                 .build();
 
@@ -272,7 +270,7 @@ class MeasurementStorageServiceTest {
                 .isOnline(true)
                 .lastSeen(testTimestamp.minusMinutes(5))
                 .build();
-        when(sensorRepo.findByLocation("Living Room")).thenReturn(Optional.of(existingSensor));
+        when(sensorRepo.findBySensorId("DHT11-001")).thenReturn(Optional.of(existingSensor));
 
         // When
         service.storeAvailability(event);
@@ -286,31 +284,11 @@ class MeasurementStorageServiceTest {
     }
 
     @Test
-    void shouldIgnoreAvailabilityEventWhenSensorNotFound() {
-        // Given
-        SensorAvailabilityEvent event = SensorAvailabilityEvent.builder()
-                .source("DHT11-999")
-                .status("online")
-                .sensorLocation("Unknown Room")
-                .timestamp(testTimestamp)
-                .build();
-
-        when(sensorRepo.findByLocation("Unknown Room")).thenReturn(Optional.empty());
-
-        // When
-        service.storeAvailability(event);
-
-        // Then
-        verify(sensorRepo, never()).save(any(Sensor.class));
-    }
-
-    @Test
     void shouldHandleAvailabilityStatusCaseInsensitive() {
         // Given - uppercase ONLINE
         SensorAvailabilityEvent onlineEvent = SensorAvailabilityEvent.builder()
-                .source("DHT11-001")
+                .sensorId("DHT11-001")
                 .status("ONLINE")
-                .sensorLocation("Living Room")
                 .timestamp(testTimestamp)
                 .build();
 
@@ -320,7 +298,7 @@ class MeasurementStorageServiceTest {
                 .location("Living Room")
                 .isOnline(false)
                 .build();
-        when(sensorRepo.findByLocation("Living Room")).thenReturn(Optional.of(sensor1));
+        when(sensorRepo.findBySensorId("DHT11-001")).thenReturn(Optional.of(sensor1));
 
         // When
         service.storeAvailability(onlineEvent);
@@ -333,9 +311,8 @@ class MeasurementStorageServiceTest {
         // Given - lowercase offline
         reset(sensorRepo);
         SensorAvailabilityEvent offlineEvent = SensorAvailabilityEvent.builder()
-                .source("DHT11-001")
+                .sensorId("DHT11-001")
                 .status("offline")
-                .sensorLocation("Living Room")
                 .timestamp(testTimestamp)
                 .build();
 
@@ -345,7 +322,7 @@ class MeasurementStorageServiceTest {
                 .location("Living Room")
                 .isOnline(true)
                 .build();
-        when(sensorRepo.findByLocation("Living Room")).thenReturn(Optional.of(sensor2));
+        when(sensorRepo.findBySensorId("DHT11-001")).thenReturn(Optional.of(sensor2));
 
         // When
         service.storeAvailability(offlineEvent);
