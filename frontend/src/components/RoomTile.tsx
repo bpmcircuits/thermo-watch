@@ -19,7 +19,10 @@ const RoomTile = ({ room, onClick, isSelected }: RoomTileProps) => {
       <div className="room-header">
         <h3 className="room-name">{room.location}</h3>
         <span className="sensor-count">
-          {t('roomTile.sensorCount', { count: room.sensorCount })}
+          {
+            room.sensorCount > 1 ? t('roomTile.sensorCountMultiple', { count: room.sensorCount }) 
+              : t('roomTile.sensorCountOne', { count: room.sensorCount })
+          }
         </span>
       </div>
       <div className="room-metrics">
