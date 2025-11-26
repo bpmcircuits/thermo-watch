@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { format } from 'date-fns';
+import { parseBackendTimestamp } from '../utils/dateUtils';
 import { sensorApi } from '../services/api';
-import { parsePostgresTimestamp } from '../utils/dateUtils';
 import { SensorDetail as SensorDetailType } from '../types';
 import TemperatureChart from './TemperatureChart';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -94,7 +94,7 @@ const SensorDetail = () => {
           <div className="meta-item">
             <span className="meta-label">{t('sensorDetail.lastUpdateLabel')}</span>
             <span className="meta-value">
-              {format(parsePostgresTimestamp(sensor.lastSeen), 'PPpp', { locale: dateLocale })}
+              {format(parseBackendTimestamp(sensor.lastSeen), 'PPpp', { locale: dateLocale })}
             </span>
           </div>
         </div>

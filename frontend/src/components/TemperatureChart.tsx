@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { format } from 'date-fns';
-import { parsePostgresTimestamp } from '../utils/dateUtils';
+import { parseBackendTimestamp } from '../utils/dateUtils';
 import { Measurement } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTranslation } from '../i18n/useTranslation';
@@ -20,7 +20,7 @@ const TemperatureChart = ({ measurements }: TemperatureChartProps) => {
       measurements
         .filter((m) => m.temperature !== null || m.humidity !== null)
         .map((m) => {
-          const date = parsePostgresTimestamp(m.timestamp);
+          const date = parseBackendTimestamp(m.timestamp);
           return {
             time: format(date, 'HH:mm', { locale: dateLocale }),
             timestamp: date.getTime(),

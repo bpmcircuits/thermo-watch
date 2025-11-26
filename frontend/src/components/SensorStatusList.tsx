@@ -1,6 +1,6 @@
 import { Sensor } from '../types';
 import { formatDistanceToNow } from 'date-fns';
-import { parsePostgresTimestamp } from '../utils/dateUtils';
+import { parseBackendTimestamp } from '../utils/dateUtils';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTranslation } from '../i18n/useTranslation';
 import './SensorStatusList.css';
@@ -18,7 +18,7 @@ const SensorStatusList = ({ sensors, onSensorClick }: SensorStatusListProps) => 
     if (sensor.isOnline) {
       return <span className="status-badge online">{t('sensorStatus.online')}</span>;
     }
-    const lastSeen = formatDistanceToNow(parsePostgresTimestamp(sensor.lastSeen), {
+    const lastSeen = formatDistanceToNow(parseBackendTimestamp(sensor.lastSeen), {
       addSuffix: true,
       locale: dateLocale,
     });
