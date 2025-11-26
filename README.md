@@ -4,6 +4,9 @@ A professional microservice-based system for monitoring temperature and humidity
 Sensors publish measurements via MQTT. The system processes the event stream, persists data in a
 database, and exposes APIs for querying. Everything is containerized and orchestrated with Docker Compose.
 
+## See it live here:
+### https://thermowatch.bpmcircuits.com
+
 ## Key features
 - Ingest measurements from sensors (e.g., Tasmota) via MQTT and normalize payloads.
 - Publish unified domain events to RabbitMQ.
