@@ -213,6 +213,9 @@ services:
     restart: always
     ports:
       - "80:80"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     depends_on:
         gateway-service:
             condition: service_healthy
