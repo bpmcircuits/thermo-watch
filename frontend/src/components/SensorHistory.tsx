@@ -199,8 +199,16 @@ const SensorHistory = () => {
                   latestMeasurements.map((measurement) => (
                     <tr key={measurement.id}>
                       <td>{format(new Date(measurement.timestamp), 'PPpp', { locale: dateLocale })}</td>
-                      <td>{measurement.temperature.toFixed(1)}</td>
-                      <td>{measurement.humidity.toFixed(1)}</td>
+                      <td>
+                        {measurement.temperature !== null && measurement.temperature !== undefined
+                          ? measurement.temperature.toFixed(1)
+                          : 'N/A'}
+                      </td>
+                      <td>
+                        {measurement.humidity !== null && measurement.humidity !== undefined
+                          ? measurement.humidity.toFixed(1)
+                          : 'N/A'}
+                      </td>
                     </tr>
                   ))
                 )}

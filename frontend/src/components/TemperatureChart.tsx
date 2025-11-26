@@ -17,11 +17,12 @@ const TemperatureChart = ({ measurements }: TemperatureChartProps) => {
   const chartData = useMemo(
     () =>
       measurements
+        .filter((m) => m.temperature !== null && m.humidity !== null)
         .map((m) => ({
           time: format(new Date(m.timestamp), 'HH:mm', { locale: dateLocale }),
           timestamp: new Date(m.timestamp).getTime(),
-          temperature: m.temperature,
-          humidity: m.humidity,
+          temperature: m.temperature as number,
+          humidity: m.humidity as number,
         }))
         .sort((a, b) => a.timestamp - b.timestamp),
     [measurements, dateLocale]
@@ -58,7 +59,10 @@ const TemperatureChart = ({ measurements }: TemperatureChartProps) => {
               border: '1px solid #ecf0f1',
               borderRadius: '8px',
             }}
-            formatter={(value: number, _name: string, props: any) => {
+            formatter={(value: number | null, _name: string, props: any) => {
+              if (value === null || value === undefined) {
+                return ['N/A', ''];
+              }
               const isTemperature = props?.dataKey === 'temperature';
               const unit = isTemperature ? '°C' : '%';
               const label = isTemperature ? t('chart.temperature') : t('chart.humidity');

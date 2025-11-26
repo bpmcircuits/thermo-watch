@@ -10,8 +10,8 @@ export interface Sensor {
 export interface Measurement {
   id: string;
   sensorId: string;
-  temperature: number;
-  humidity: number;
+  temperature: number | null;
+  humidity: number | null;
   timestamp: string;
 }
 
