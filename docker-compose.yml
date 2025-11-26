@@ -202,31 +202,31 @@ services:
     networks:
       - backend
 
-#  frontend:
-#    build:
-#      context: ./frontend
-#      dockerfile: Dockerfile
-#    container_name: frontend
-#    restart: always
-#    ports:
-#      - "80:80"
-#    depends_on:
-#        gateway-service:
-#            condition: service_healthy
-#    networks:
-#      - backend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+        gateway-service:
+            condition: service_healthy
+    networks:
+      - backend
 
-#  cloudflared:
-#    image: cloudflare/cloudflared:latest
-#    container_name: cloudflared
-#    volumes:
-#      - /home/ubuntu/.cloudflared:/home/nonroot/.cloudflared:ro
-#    command: tunnel run
-#    depends_on:
-#      - frontend
-#    restart: unless-stopped
-#    networks:
-#      - backend
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    volumes:
+      - /home/ubuntu/.cloudflared:/home/nonroot/.cloudflared:ro
+    command: tunnel run
+    depends_on:
+      - frontend
+    restart: unless-stopped
+    networks:
+      - backend
 
 volumes:
   pgdata:
