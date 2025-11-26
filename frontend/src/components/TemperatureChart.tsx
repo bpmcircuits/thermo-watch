@@ -28,8 +28,18 @@ const TemperatureChart = ({ measurements }: TemperatureChartProps) => {
     [measurements, dateLocale]
   );
 
+  if (chartData.length === 0) {
+    return (
+      <div className="no-data">
+        {measurements.length === 0
+          ? t('chart.noData')
+          : t('chart.noValidData')}
+      </div>
+    );
+  }
+
   return (
-    <div className="temperature-chart">
+    <div className="temperature-chart" style={{ width: '100%', minHeight: '400px' }}>
       <ResponsiveContainer width="100%" height={400}>
         <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#ecf0f1" />

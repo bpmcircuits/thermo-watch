@@ -1,6 +1,12 @@
 .temperature-chart {
   width: 100%;
+  min-width: 0;
   margin-top: 1rem;
+  position: relative;
+}
+
+.temperature-chart > div {
+  width: 100% !important;
 }
 
 
