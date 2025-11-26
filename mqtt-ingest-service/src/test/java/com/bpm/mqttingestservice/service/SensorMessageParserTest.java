@@ -86,7 +86,7 @@ class SensorMessageParserTest {
     }
 
     @Test
-    void shouldExtractLocationFromSensorTopic() throws Exception {
+    void shouldExtractLocationAndIdFromSensorTopic() throws Exception {
         // Given
         SensorMessage expectedMessage = new SensorMessage();
         when(objectMapper.readValue(anyString(), eq(SensorMessage.class))).thenReturn(expectedMessage);

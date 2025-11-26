@@ -26,11 +26,11 @@ public class AvailabilityProcessingStrategy implements SensorProcessingStrategy<
 
     @Override
     public void processSensorData(String data, SensorMessage message) {
-        String availability = message.getAvailability();
-        String sensorTopic = message.getSensorTopic();
+        String sensorId = message.getSensorId();
+        String status = message.getAvailability();
 
-        logger.info("Device {} is now: {}", sensorTopic, availability);
+        logger.info("Device {} is now: {}", sensorId, status);
 
-        sensorMeasurementService.sendAvailability(sensorTopic, availability);
+        sensorMeasurementService.sendAvailability(sensorId, status);
     }
 }

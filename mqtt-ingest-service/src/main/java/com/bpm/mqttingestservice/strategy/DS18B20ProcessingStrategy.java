@@ -27,8 +27,8 @@ public class DS18B20ProcessingStrategy implements SensorProcessingStrategy<DS18B
 
     @Override
     public void processSensorData(DS18B20Data sensorData, SensorMessage message) {
-        String sensorTopic = message.getSensorTopic();
-        logger.info("Got data from sensor topic: {}", sensorTopic);
-        sensorMeasurementService.send(sensorTopic, sensorData);
+        logger.info("Got data from sensor: {}, location: {}",
+                message.getSensorId(), message.getLocation());
+        sensorMeasurementService.sendMeasurement(message, sensorData);
     }
 }

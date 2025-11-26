@@ -19,7 +19,7 @@ class SensorAvailabilityEventTest {
                 .timestamp(timestamp)
                 .build();
 
-        assertEquals("Kitchen", event.sensorLocation());
+        assertEquals("Kitchen", event.sensorId());
         assertEquals("ONLINE", event.status());
         assertEquals("sensor-service", event.source());
         assertEquals(timestamp, event.timestamp());

@@ -27,12 +27,15 @@ public class SensorProcessingContext {
         }
     }
 
-    public void processSensorMessage(SensorMessage message) {
+    public void processMessage(SensorMessage message) {
         if (message.getAvailability() != null) {
             processAvailability(message);
-            return;
+        } else {
+            processMeasurement(message);
         }
+    }
 
+    private void processMeasurement(SensorMessage message) {
         message.getSensorData().forEach((sensorType, rawData) -> {
             SensorProcessingStrategy<?> strategy = strategies.get(sensorType);
 

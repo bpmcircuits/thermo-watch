@@ -14,6 +14,6 @@ public class MqttIngestService {
 
     public void ingest(String topic, String payload) {
         SensorMessage message = parser.parse(topic, payload);
-        processingContext.processSensorMessage(message);
+        processingContext.processMessage(message);
     }
 }

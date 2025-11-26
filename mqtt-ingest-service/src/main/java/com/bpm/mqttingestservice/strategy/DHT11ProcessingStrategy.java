@@ -28,10 +28,7 @@ public class DHT11ProcessingStrategy implements SensorProcessingStrategy<DHT11Da
 
     @Override
     public void processSensorData(DHT11Data data, SensorMessage message) {
-
-        String sensorTopic = message.getSensorTopic();
-        logger.info("Got data from sensor topic: {}", sensorTopic);
-        sensorMeasurementService.send(sensorTopic, data);
-
+        logger.info("Got data from sensor {}, location: {}", message.getSensorId(), message.getLocation());
+        sensorMeasurementService.sendMeasurement(message, data);
     }
 }

@@ -56,7 +56,7 @@ class SensorProcessingContextTest {
         message.setAvailability("online");
 
         // When
-        context.processSensorMessage(message);
+        context.processMessage(message);
 
         // Then
         verify(availabilityStrategy).processSensorData("online", message);
@@ -78,7 +78,7 @@ class SensorProcessingContextTest {
         when(objectMapper.convertValue(rawData, DHT11Data.class)).thenReturn(typedData);
 
         // When
-        context.processSensorMessage(message);
+        context.processMessage(message);
 
         // Then
         ArgumentCaptor<DHT11Data> dataCaptor = ArgumentCaptor.forClass(DHT11Data.class);
@@ -99,7 +99,7 @@ class SensorProcessingContextTest {
         when(objectMapper.convertValue(rawData, DS18B20Data.class)).thenReturn(typedData);
 
         // When
-        context.processSensorMessage(message);
+        context.processMessage(message);
 
         // Then
         verify(ds18b20Strategy).processSensorData(typedData, message);
@@ -122,7 +122,7 @@ class SensorProcessingContextTest {
         when(objectMapper.convertValue(rawData2, DS18B20Data.class)).thenReturn(typedData2);
 
         // When
-        context.processSensorMessage(message);
+        context.processMessage(message);
 
         // Then
         verify(dht11Strategy).processSensorData(typedData1, message);
@@ -136,7 +136,7 @@ class SensorProcessingContextTest {
         message.addSensorData("UNKNOWN", new HashMap<>());
 
         // When
-        context.processSensorMessage(message);
+        context.processMessage(message);
 
         // Then
         verify(dht11Strategy, never()).processSensorData(any(), any());
@@ -156,7 +156,7 @@ class SensorProcessingContextTest {
                 .thenThrow(new IllegalArgumentException("Conversion error"));
 
         // When
-        context.processSensorMessage(message);
+        context.processMessage(message);
 
         // Then
         verify(dht11Strategy, never()).processSensorData(any(), any());
@@ -170,7 +170,7 @@ class SensorProcessingContextTest {
         message.addSensorData("DHT11", new HashMap<>());
 
         // When
-        context.processSensorMessage(message);
+        context.processMessage(message);
 
         // Then
         verify(availabilityStrategy).processSensorData("offline", message);
@@ -183,7 +183,7 @@ class SensorProcessingContextTest {
         SensorMessage message = new SensorMessage();
 
         // When
-        context.processSensorMessage(message);
+        context.processMessage(message);
 
         // Then
         verifyNoInteractions(dht11Strategy, ds18b20Strategy, availabilityStrategy);

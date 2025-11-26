@@ -10,7 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,7 +45,7 @@ class DHT11ProcessingStrategyTest {
     @Test
     void shouldReturnDHT11DataClass() {
         // When
-        Class<?> result = strategy.getDataClass();
+        Class<DHT11Data> result = strategy.getDataClass();
 
         // Then
         assertEquals(DHT11Data.class, result);
@@ -57,7 +57,7 @@ class DHT11ProcessingStrategyTest {
         strategy.processSensorData(dht11Data, sensorMessage);
 
         // Then
-        verify(sensorMeasurementService).send("temp_bathroom", dht11Data);
+        verify(sensorMeasurementService).sendMeasurement("temp_bathroom", dht11Data);
     }
 
     @Test
@@ -69,7 +69,7 @@ class DHT11ProcessingStrategyTest {
         strategy.processSensorData(dht11Data, sensorMessage);
 
         // Then
-        verify(sensorMeasurementService).send("temp_kitchen", dht11Data);
+        verify(sensorMeasurementService).sendMeasurement("temp_kitchen", dht11Data);
     }
 
     @Test
@@ -88,16 +88,7 @@ class DHT11ProcessingStrategyTest {
         strategy.processSensorData(data2, message2);
 
         // Then
-        verify(sensorMeasurementService).send("temp_bathroom", data1);
-        verify(sensorMeasurementService).send("temp_kitchen", data2);
-    }
-
-    @Test
-    void shouldCastDataToDHT11Data() {
-        // Given & When
-        strategy.processSensorData(dht11Data, sensorMessage);
-
-        // Then
-        verify(sensorMeasurementService).send("temp_bathroom", dht11Data);
+        verify(sensorMeasurementService).sendMeasurement("temp_bathroom", data1);
+        verify(sensorMeasurementService).sendMeasurement("temp_kitchen", data2);
     }
 }

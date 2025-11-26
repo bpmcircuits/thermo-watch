@@ -54,7 +54,7 @@ class MqttIngestServiceTest {
 
         // Then
         verify(parser).parse(testTopic, testPayload);
-        verify(processingContext).processSensorMessage(testMessage);
+        verify(processingContext).processMessage(testMessage);
     }
 
     @Test
@@ -79,7 +79,7 @@ class MqttIngestServiceTest {
         service.ingest(testTopic, testPayload);
 
         // Then
-        verify(processingContext).processSensorMessage(expectedMessage);
+        verify(processingContext).processMessage(expectedMessage);
     }
 
     @Test
@@ -99,8 +99,8 @@ class MqttIngestServiceTest {
         // Then
         verify(parser).parse(topic1, testPayload);
         verify(parser).parse(topic2, testPayload);
-        verify(processingContext).processSensorMessage(message1);
-        verify(processingContext).processSensorMessage(message2);
+        verify(processingContext).processMessage(message1);
+        verify(processingContext).processMessage(message2);
     }
 
     @Test
@@ -111,19 +111,19 @@ class MqttIngestServiceTest {
         // When & Then
         assertThrows(RuntimeException.class, () -> service.ingest(testTopic, testPayload));
         verify(parser).parse(testTopic, testPayload);
-        verify(processingContext, never()).processSensorMessage(any());
+        verify(processingContext, never()).processMessage(any());
     }
 
     @Test
     void shouldPropagateProcessingContextException() {
         // Given
         when(parser.parse(testTopic, testPayload)).thenReturn(testMessage);
-        doThrow(new RuntimeException("Processing error")).when(processingContext).processSensorMessage(testMessage);
+        doThrow(new RuntimeException("Processing error")).when(processingContext).processMessage(testMessage);
 
         // When & Then
         assertThrows(RuntimeException.class, () -> service.ingest(testTopic, testPayload));
         verify(parser).parse(testTopic, testPayload);
-        verify(processingContext).processSensorMessage(testMessage);
+        verify(processingContext).processMessage(testMessage);
     }
 
     @Test
@@ -137,6 +137,6 @@ class MqttIngestServiceTest {
 
         // Then
         verify(parser).parse(testTopic, emptyPayload);
-        verify(processingContext).processSensorMessage(testMessage);
+        verify(processingContext).processMessage(testMessage);
     }
 }

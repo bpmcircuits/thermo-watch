@@ -1,12 +1,8 @@
 package com.bpm.mqttingestservice.domain;
 
-import com.bpm.events.dto.SensorMeasurementEvent;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Getter
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -16,20 +12,12 @@ public class DS18B20Data implements SensorData {
 
     @JsonProperty("Id")
     private String id;
+
     @JsonProperty("Temperature")
     private double temperature;
 
-    @Override
-    public SensorMeasurementEvent toMeasurementEvent(String topic) {
-
-        return SensorMeasurementEvent.builder()
-                .sensorType(SENSOR_TYPE)
-                .sensorId(this.getId())
-                .location(topic)
-                .temperature(new BigDecimal(this.getTemperature()))
-                .humidity(null)
-                .dewPoint(null)
-                .timestamp(LocalDateTime.now())
-                .build();
+    public static String sensorType() {
+        return SENSOR_TYPE;
     }
+
 }

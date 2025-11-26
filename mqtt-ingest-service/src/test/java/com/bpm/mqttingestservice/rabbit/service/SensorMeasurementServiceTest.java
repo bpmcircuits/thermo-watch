@@ -53,7 +53,7 @@ class SensorMeasurementServiceTest {
     }
 
     @Test
-    void shouldSendMeasurementEvent() {
+    void shouldSendMeasurementMeasurementEvent() {
         // Given
         String topic = "temp_bathroom";
         SensorData sensorData = mock(SensorData.class);
@@ -69,7 +69,7 @@ class SensorMeasurementServiceTest {
         when(sensorMeasurementMapper.mapToSensorMeasurementEvent(topic, sensorData)).thenReturn(event);
 
         // When
-        service.send(topic, sensorData);
+        service.sendMeasurement(topic, sensorData);
 
         // Then
         verify(sensorMeasurementMapper).mapToSensorMeasurementEvent(topic, sensorData);
@@ -85,7 +85,7 @@ class SensorMeasurementServiceTest {
         when(sensorMeasurementMapper.mapToSensorMeasurementEvent(topic, sensorData)).thenReturn(event);
 
         // When
-        service.send(topic, sensorData);
+        service.sendMeasurement(topic, sensorData);
 
         // Then
         verify(rabbitTemplate).convertAndSend(
@@ -96,7 +96,7 @@ class SensorMeasurementServiceTest {
     }
 
     @Test
-    void shouldSendAvailabilityEvent() {
+    void shouldSendMeasurementAvailabilityEvent() {
         // Given
         String sensorLocation = "temp_bathroom";
         String status = "online";
@@ -112,14 +112,14 @@ class SensorMeasurementServiceTest {
         );
 
         SensorAvailabilityEvent capturedEvent = availabilityEventCaptor.getValue();
-        assertEquals(sensorLocation, capturedEvent.sensorLocation());
+        assertEquals(sensorLocation, capturedEvent.sensorId());
         assertEquals(status, capturedEvent.status());
         assertEquals("MQTT_LWT", capturedEvent.source());
         assertNotNull(capturedEvent.timestamp());
     }
 
     @Test
-    void shouldSendAvailabilityWithOfflineStatus() {
+    void shouldSendMeasurementAvailabilityWithOfflineStatus() {
         // Given
         String sensorLocation = "temp_kitchen";
         String status = "offline";
@@ -135,7 +135,7 @@ class SensorMeasurementServiceTest {
         );
 
         SensorAvailabilityEvent capturedEvent = availabilityEventCaptor.getValue();
-        assertEquals(sensorLocation, capturedEvent.sensorLocation());
+        assertEquals(sensorLocation, capturedEvent.sensorId());
         assertEquals("offline", capturedEvent.status());
     }
 
@@ -171,8 +171,8 @@ class SensorMeasurementServiceTest {
         when(sensorMeasurementMapper.mapToSensorMeasurementEvent(topic2, sensorData2)).thenReturn(event2);
 
         // When
-        service.send(topic1, sensorData1);
-        service.send(topic2, sensorData2);
+        service.sendMeasurement(topic1, sensorData1);
+        service.sendMeasurement(topic2, sensorData2);
 
         // Then
         verify(rabbitTemplate).convertAndSend(exchangeName, measurementRoutingKey, event1);

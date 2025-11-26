@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record SensorAvailabilityEvent(
-        String sensorLocation,
+        String sensorId,
         String status,
         String source,
         LocalDateTime timestamp

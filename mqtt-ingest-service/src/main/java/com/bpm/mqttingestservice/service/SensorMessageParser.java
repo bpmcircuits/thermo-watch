@@ -38,9 +38,11 @@ public class SensorMessageParser {
 
     private SensorMessage parseSensorMessage(String topic, String payload) {
         try {
-            String sensorTopic = extractLocationFromSensorTopic(topic);
+            String sensorId = extractIdFromSensorTopic(topic);
+            String sensorLocation = extractLocationFromSensorTopic(topic);
             SensorMessage message = objectMapper.readValue(payload, SensorMessage.class);
-            message.setSensorTopic(sensorTopic);
+            message.setSensorId(sensorId);
+            message.setLocation(sensorLocation);
             return message;
         } catch (Exception e) {
             log.error("Failed to parse sensor message from topic: {}", topic, e);
@@ -50,10 +52,11 @@ public class SensorMessageParser {
 
     private SensorMessage parseAvailabilityMessage(String topic, String payload) {
         try {
-            String sensorTopic = extractLocationFromSensorTopic(topic);
-
+            String sensorId = extractIdFromSensorTopic(topic);
+            String sensorLocation = extractLocationFromSensorTopic(topic);
             SensorMessage message = new SensorMessage();
-            message.setSensorTopic(sensorTopic);
+            message.setSensorId(sensorId);
+            message.setLocation(sensorLocation);
             message.setAvailability(payload == null ? null : payload.trim());
 
             return message;
@@ -63,9 +66,43 @@ public class SensorMessageParser {
         }
     }
 
-    private String extractLocationFromSensorTopic(String topic) {
+    private String extractIdFromSensorTopic(String topic) {
+        if (topic == null || topic.isBlank()) {
+            return null;
+        }
+
         String[] parts = topic.split("/");
-        return parts.length > 1 ? parts[1] : topic;
+        if (parts.length < 5) {
+            return null;
+        }
+
+        String deviceId = parts[3];
+
+        if (deviceId.isBlank()) {
+            return null;
+        }
+
+        return deviceId;
+    }
+
+    private String extractLocationFromSensorTopic(String topic) {
+        if (topic == null || topic.isBlank()) {
+            return null;
+        }
+
+        String[] parts = topic.split("/");
+        if (parts.length < 5) {
+            return null;
+        }
+
+        String site = parts[1];
+        String room = parts[2];
+
+        if (site.isBlank() || room.isBlank()) {
+            return null;
+        }
+
+        return site + "_" + room;
     }
 
 }
