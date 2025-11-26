@@ -69,8 +69,8 @@ const TemperatureChart = ({ measurements }: TemperatureChartProps) => {
               border: '1px solid #ecf0f1',
               borderRadius: '8px',
             }}
-            formatter={(value: number | null, _name: string, props: any) => {
-              if (value === null || value === undefined) {
+            formatter={(value: any, _name: string, props: any) => {
+              if (value === null || value === undefined || typeof value !== 'number') {
                 return ['N/A', ''];
               }
               const isTemperature = props?.dataKey === 'temperature';

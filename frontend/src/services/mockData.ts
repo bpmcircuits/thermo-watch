@@ -100,8 +100,12 @@ const calculateRoomData = (): RoomData[] => {
     const measurements = generateMeasurements(sensor.sensorId, 1);
     if (measurements.length > 0) {
       const latest = measurements[measurements.length - 1];
-      room.temps.push(latest.temperature);
-      room.humidities.push(latest.humidity);
+      if (latest.temperature !== null && latest.temperature !== undefined) {
+        room.temps.push(latest.temperature);
+      }
+      if (latest.humidity !== null && latest.humidity !== undefined) {
+        room.humidities.push(latest.humidity);
+      }
     }
   });
 
