@@ -6,7 +6,7 @@ import RoomTile from './RoomTile';
 import TemperatureChart from './TemperatureChart';
 import SensorStatusList from './SensorStatusList';
 import { useTranslation } from '../i18n/useTranslation';
-import { parseISO } from 'date-fns';
+import { parseBackendTimestamp } from '../utils/dateUtils';
 import './Dashboard.css';
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
@@ -63,7 +63,7 @@ const Dashboard = () => {
       ]);
       const now = Date.now();
       const activeSensors = sensorsData.filter(
-        (sensor) => now - parseISO(sensor.lastSeen).getTime() <= ONE_HOUR_MS
+        (sensor) => now - parseBackendTimestamp(sensor.lastSeen).getTime() <= ONE_HOUR_MS
       );
       setSensors(activeSensors);
 
