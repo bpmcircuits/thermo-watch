@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { format } from 'date-fns';
 import { sensorApi } from '../services/api';
 import { SensorDetail as SensorDetailType } from '../types';
 import TemperatureChart from './TemperatureChart';
-import { format } from 'date-fns';
-import pl from 'date-fns/locale/pl';
+import { useLanguage } from '../i18n/LanguageContext';
+import { useTranslation } from '../i18n/useTranslation';
 import './SensorDetail.css';
 
 const SensorDetail = () => {
@@ -12,6 +13,8 @@ const SensorDetail = () => {
   const navigate = useNavigate();
   const [sensor, setSensor] = useState<SensorDetailType | null>(null);
   const [loading, setLoading] = useState(true);
+  const { dateLocale } = useLanguage();
+  const { t } = useTranslation();
 
   const loadSensorData = async () => {
     if (!id) return;
@@ -38,7 +41,7 @@ const SensorDetail = () => {
     return (
       <div className="sensor-detail-loading">
         <div className="spinner"></div>
-        <p>Ładowanie danych czujnika...</p>
+        <p>{t('sensorDetail.loading')}</p>
       </div>
     );
   }
@@ -46,9 +49,9 @@ const SensorDetail = () => {
   if (!sensor) {
     return (
       <div className="sensor-detail-error">
-        <p>Czujnik nie został znaleziony</p>
+        <p>{t('sensorDetail.notFound')}</p>
         <button onClick={() => navigate('/')} className="back-button">
-          Powrót do Dashboard
+          {t('sensorDetail.backButton')}
         </button>
       </div>
     );
@@ -56,52 +59,52 @@ const SensorDetail = () => {
 
   const getStatusBadge = () => {
     if (sensor.isOnline) {
-      return <span className="status-badge online">Online</span>;
+      return <span className="status-badge online">{t('sensorStatus.online')}</span>;
     }
-    return <span className="status-badge offline">Offline</span>;
+    return <span className="status-badge offline">{t('sensorStatus.offline')}</span>;
   };
 
   return (
     <div className="sensor-detail">
       <button onClick={() => navigate('/')} className="back-button">
-        ← Powrót do Dashboard
+        ← {t('sensorDetail.backButton')}
       </button>
 
       <div className="sensor-header-section">
-        <h1 className="sensor-detail-title">Szczegóły czujnika</h1>
+        <h1 className="sensor-detail-title">{t('sensorDetail.title')}</h1>
         {getStatusBadge()}
       </div>
 
       <div className="sensor-meta-section">
-        <h2 className="section-title">Informacje o czujniku</h2>
+        <h2 className="section-title">{t('sensorDetail.infoTitle')}</h2>
         <div className="meta-grid">
           <div className="meta-item">
-            <span className="meta-label">ID Czujnika:</span>
+            <span className="meta-label">{t('sensorDetail.idLabel')}</span>
             <span className="meta-value">{sensor.sensorId}</span>
           </div>
           <div className="meta-item">
-            <span className="meta-label">Lokalizacja:</span>
+            <span className="meta-label">{t('sensorDetail.locationLabel')}</span>
             <span className="meta-value">{sensor.location}</span>
           </div>
           <div className="meta-item">
-            <span className="meta-label">Typ sensora:</span>
+            <span className="meta-label">{t('sensorDetail.typeLabel')}</span>
             <span className="meta-value">{sensor.sensorType}</span>
           </div>
           <div className="meta-item">
-            <span className="meta-label">Ostatnia aktualizacja:</span>
+            <span className="meta-label">{t('sensorDetail.lastUpdateLabel')}</span>
             <span className="meta-value">
-              {format(new Date(sensor.lastSeen), 'PPpp', { locale: pl })}
+              {format(new Date(sensor.lastSeen), 'PPpp', { locale: dateLocale })}
             </span>
           </div>
         </div>
       </div>
 
       <div className="sensor-chart-section">
-        <h2 className="section-title">Temperatura i wilgotność (ostatnie 24h)</h2>
+        <h2 className="section-title">{t('sensorDetail.chartTitle')}</h2>
         {sensor.measurements && sensor.measurements.length > 0 ? (
           <TemperatureChart measurements={sensor.measurements} />
         ) : (
-          <div className="no-data">Brak danych pomiarowych</div>
+          <div className="no-data">{t('sensorDetail.noMeasurements')}</div>
         )}
       </div>
     </div>

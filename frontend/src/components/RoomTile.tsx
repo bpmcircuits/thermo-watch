@@ -1,4 +1,5 @@
 import { RoomData } from '../types';
+import { useTranslation } from '../i18n/useTranslation';
 import './RoomTile.css';
 
 interface RoomTileProps {
@@ -8,6 +9,8 @@ interface RoomTileProps {
 }
 
 const RoomTile = ({ room, onClick, isSelected }: RoomTileProps) => {
+  const { t } = useTranslation();
+
   return (
     <div
       className={`room-tile ${isSelected ? 'selected' : ''}`}
@@ -15,23 +18,25 @@ const RoomTile = ({ room, onClick, isSelected }: RoomTileProps) => {
     >
       <div className="room-header">
         <h3 className="room-name">{room.location}</h3>
-        <span className="sensor-count">{room.sensorCount} czujników</span>
+        <span className="sensor-count">
+          {t('roomTile.sensorCount', { count: room.sensorCount })}
+        </span>
       </div>
       <div className="room-metrics">
         <div className="metric">
-          <span className="metric-label">Temperatura</span>
+          <span className="metric-label">{t('roomTile.temperature')}</span>
           <span className="metric-value temperature">
             {room.currentTemperature !== null 
               ? `${room.currentTemperature.toFixed(1)}°C`
-              : 'Brak danych'}
+              : t('roomTile.noData')}
           </span>
         </div>
         <div className="metric">
-          <span className="metric-label">Wilgotność</span>
+          <span className="metric-label">{t('roomTile.humidity')}</span>
           <span className="metric-value humidity">
             {room.currentHumidity !== null 
               ? `${room.currentHumidity.toFixed(1)}%`
-              : 'Brak danych'}
+              : t('roomTile.noData')}
           </span>
         </div>
       </div>

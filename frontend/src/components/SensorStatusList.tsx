@@ -1,6 +1,7 @@
 import { Sensor } from '../types';
 import { formatDistanceToNow } from 'date-fns';
-import pl from 'date-fns/locale/pl';
+import { useLanguage } from '../i18n/LanguageContext';
+import { useTranslation } from '../i18n/useTranslation';
 import './SensorStatusList.css';
 
 interface SensorStatusListProps {
@@ -9,21 +10,28 @@ interface SensorStatusListProps {
 }
 
 const SensorStatusList = ({ sensors, onSensorClick }: SensorStatusListProps) => {
+  const { dateLocale } = useLanguage();
+  const { t } = useTranslation();
+
   const getStatusBadge = (sensor: Sensor) => {
     if (sensor.isOnline) {
-      return <span className="status-badge online">Online</span>;
+      return <span className="status-badge online">{t('sensorStatus.online')}</span>;
     }
     const lastSeen = formatDistanceToNow(new Date(sensor.lastSeen), {
       addSuffix: true,
-      locale: pl,
+      locale: dateLocale,
     });
-    return <span className="status-badge offline">Offline ({lastSeen})</span>;
+    return (
+      <span className="status-badge offline">
+        {t('sensorStatus.offlineSince', { time: lastSeen })}
+      </span>
+    );
   };
 
   return (
     <div className="sensor-status-list">
       {sensors.length === 0 ? (
-        <div className="no-sensors">Brak czujników</div>
+        <div className="no-sensors">{t('sensorStatus.noSensors')}</div>
       ) : (
         <div className="sensors-grid">
           {sensors.map((sensor) => (
@@ -38,11 +46,11 @@ const SensorStatusList = ({ sensors, onSensorClick }: SensorStatusListProps) => 
               </div>
               <div className="sensor-info">
                 <div className="info-item">
-                  <span className="info-label">Lokalizacja:</span>
+                  <span className="info-label">{t('sensorStatus.locationLabel')}</span>
                   <span className="info-value">{sensor.location}</span>
                 </div>
                 <div className="info-item">
-                  <span className="info-label">Typ:</span>
+                  <span className="info-label">{t('sensorStatus.typeLabel')}</span>
                   <span className="info-value">{sensor.sensorType}</span>
                 </div>
               </div>

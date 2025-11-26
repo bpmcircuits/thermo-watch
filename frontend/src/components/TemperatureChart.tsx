@@ -1,7 +1,9 @@
+import { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { Measurement } from '../types';
 import { format } from 'date-fns';
-import pl from 'date-fns/locale/pl';
+import { Measurement } from '../types';
+import { useLanguage } from '../i18n/LanguageContext';
+import { useTranslation } from '../i18n/useTranslation';
 import './TemperatureChart.css';
 
 interface TemperatureChartProps {
@@ -9,14 +11,21 @@ interface TemperatureChartProps {
 }
 
 const TemperatureChart = ({ measurements }: TemperatureChartProps) => {
-  const chartData = measurements
-    .map((m) => ({
-      time: format(new Date(m.timestamp), 'HH:mm', { locale: pl }),
-      timestamp: new Date(m.timestamp).getTime(),
-      temperatura: m.temperature,
-      wilgotność: m.humidity,
-    }))
-    .sort((a, b) => a.timestamp - b.timestamp);
+  const { dateLocale } = useLanguage();
+  const { t } = useTranslation();
+
+  const chartData = useMemo(
+    () =>
+      measurements
+        .map((m) => ({
+          time: format(new Date(m.timestamp), 'HH:mm', { locale: dateLocale }),
+          timestamp: new Date(m.timestamp).getTime(),
+          temperature: m.temperature,
+          humidity: m.humidity,
+        }))
+        .sort((a, b) => a.timestamp - b.timestamp),
+    [measurements, dateLocale]
+  );
 
   return (
     <div className="temperature-chart">
@@ -33,14 +42,14 @@ const TemperatureChart = ({ measurements }: TemperatureChartProps) => {
             yAxisId="temp"
             orientation="left"
             stroke="#e74c3c"
-            label={{ value: 'Temperatura (°C)', angle: -90, position: 'insideLeft' }}
+            label={{ value: t('chart.temperatureAxis'), angle: -90, position: 'insideLeft' }}
             style={{ fontSize: '12px' }}
           />
           <YAxis
             yAxisId="humidity"
             orientation="right"
             stroke="#3498db"
-            label={{ value: 'Wilgotność (%)', angle: 90, position: 'insideRight' }}
+            label={{ value: t('chart.humidityAxis'), angle: 90, position: 'insideRight' }}
             style={{ fontSize: '12px' }}
           />
           <Tooltip
@@ -49,31 +58,33 @@ const TemperatureChart = ({ measurements }: TemperatureChartProps) => {
               border: '1px solid #ecf0f1',
               borderRadius: '8px',
             }}
-            formatter={(value: number, name: string) => [
-              `${value.toFixed(1)}${name === 'Temperatura' ? '°C' : '%'}`,
-              name,
-            ]}
+            formatter={(value: number, _name: string, props: any) => {
+              const isTemperature = props?.dataKey === 'temperature';
+              const unit = isTemperature ? '°C' : '%';
+              const label = isTemperature ? t('chart.temperature') : t('chart.humidity');
+              return [`${Number(value).toFixed(1)}${unit}`, label];
+            }}
           />
           <Legend />
           <Line
             yAxisId="temp"
             type="monotone"
-            dataKey="temperatura"
+            dataKey="temperature"
             stroke="#e74c3c"
             strokeWidth={2}
-            dot={{ r: 3 }}
-            activeDot={{ r: 6 }}
-            name="Temperatura"
+            dot={false}
+            activeDot={{ r: 6, fill: '#e74c3c' }}
+            name={t('chart.temperature')}
           />
           <Line
             yAxisId="humidity"
             type="monotone"
-            dataKey="wilgotność"
+            dataKey="humidity"
             stroke="#3498db"
             strokeWidth={2}
-            dot={{ r: 3 }}
-            activeDot={{ r: 6 }}
-            name="Wilgotność"
+            dot={false}
+            activeDot={{ r: 6, fill: '#3498db' }}
+            name={t('chart.humidity')}
           />
         </LineChart>
       </ResponsiveContainer>

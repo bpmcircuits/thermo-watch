@@ -5,7 +5,10 @@ import { RoomData, Sensor, Measurement } from '../types';
 import RoomTile from './RoomTile';
 import TemperatureChart from './TemperatureChart';
 import SensorStatusList from './SensorStatusList';
+import { useTranslation } from '../i18n/useTranslation';
 import './Dashboard.css';
+
+const ONE_HOUR_MS = 60 * 60 * 1000;
 
 const Dashboard = () => {
   const [rooms, setRooms] = useState<RoomData[]>([]);
@@ -13,9 +16,10 @@ const Dashboard = () => {
   const [selectedLocation, setSelectedLocation] = useState<string>('');
   const [locationMeasurements, setLocationMeasurements] = useState<Measurement[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [hasError, setHasError] = useState(false);
   const navigate = useNavigate();
   const selectedLocationRef = useRef<string>('');
+  const { t } = useTranslation();
   
   // Aktualizuj ref przy każdej zmianie selectedLocation
   useEffect(() => {
@@ -29,10 +33,17 @@ const Dashboard = () => {
   }, []);
 
   const loadLocationMeasurements = useCallback(async (location: string) => {
-    if (!location) return;
+    if (!location) {
+      setLocationMeasurements([]);
+      return;
+    }
     try {
       const measurements = await sensorApi.getLocationMeasurements(location, 24);
-      setLocationMeasurements(measurements);
+      const cutoff = Date.now() - ONE_HOUR_MS;
+      const recentMeasurements = measurements.filter(
+        (measurement) => new Date(measurement.timestamp).getTime() >= cutoff
+      );
+      setLocationMeasurements(recentMeasurements);
     } catch (error) {
       console.error('Błąd ładowania pomiarów:', error);
     }
@@ -46,28 +57,41 @@ const Dashboard = () => {
 
   const loadData = async () => {
     try {
-      setError(null);
+      setHasError(false);
       const [roomsData, sensorsData] = await Promise.all([
         sensorApi.getRoomsData(),
         sensorApi.getAllSensors(),
       ]);
-      setRooms(roomsData);
-      setSensors(sensorsData);
+      const now = Date.now();
+      const activeSensors = sensorsData.filter(
+        (sensor) => now - new Date(sensor.lastSeen).getTime() <= ONE_HOUR_MS
+      );
+      setSensors(activeSensors);
+
+      const activeLocations = new Set(activeSensors.map((sensor) => sensor.location));
+      const activeRooms = roomsData.filter((room) => activeLocations.has(room.location));
+      setRooms(activeRooms);
       
       // Użyj ref do odczytania aktualnej wartości selectedLocation
       const currentLocation = selectedLocationRef.current;
-      
-      // Zachowaj wybraną lokalizację, ustaw pierwszą tylko jeśli nic nie jest wybrane
-      if (!currentLocation && roomsData.length > 0) {
-        setSelectedLocation(roomsData[0].location);
-      } else if (currentLocation) {
-        // Odśwież pomiary dla wybranej lokalizacji
-        loadLocationMeasurements(currentLocation);
+
+      const locationStillActive =
+        currentLocation && activeRooms.some((room) => room.location === currentLocation);
+      const nextLocation = locationStillActive ? currentLocation : activeRooms[0]?.location || '';
+
+      if (nextLocation !== currentLocation) {
+        setSelectedLocation(nextLocation);
+      }
+
+      if (nextLocation) {
+        loadLocationMeasurements(nextLocation);
+      } else {
+        setLocationMeasurements([]);
       }
       setLoading(false);
     } catch (error) {
       console.error('Błąd ładowania danych:', error);
-      setError('Nie udało się załadować danych. Sprawdź konsolę przeglądarki.');
+      setHasError(true);
       setLoading(false);
     }
   };
@@ -76,47 +100,57 @@ const Dashboard = () => {
     return (
       <div className="dashboard-loading">
         <div className="spinner"></div>
-        <p>Ładowanie danych...</p>
+        <p>{t('loading.generic')}</p>
       </div>
     );
   }
 
   return (
     <div className="dashboard">
-      <h1 className="dashboard-title">Dashboard</h1>
-      {error && (
+      <h1 className="dashboard-title">{t('dashboard.title')}</h1>
+      {hasError && (
         <div className="error-banner">
-          ⚠️ {error}
+          ⚠️ {t('dashboard.errorLoadData')}
         </div>
       )}
 
       <section className="rooms-section">
-        <h2 className="section-title">Aktualna temperatura / wilgotność per pomieszczenie</h2>
-        <div className="rooms-grid">
-          {rooms.map((room) => (
-            <RoomTile
-              key={room.location}
-              room={room}
-              onClick={() => setSelectedLocation(room.location)}
-              isSelected={selectedLocation === room.location}
-            />
-          ))}
-        </div>
+        <h2 className="section-title">{t('dashboard.roomsTitle')}</h2>
+        {rooms.length === 0 ? (
+          <div className="no-data">{t('dashboard.noActiveRooms')}</div>
+        ) : (
+          <div className="rooms-grid">
+            {rooms.map((room) => (
+              <RoomTile
+                key={room.location}
+                room={room}
+                onClick={() => setSelectedLocation(room.location)}
+                isSelected={selectedLocation === room.location}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="chart-section">
         <h2 className="section-title">
-          Temperatura w lokalizacji: {selectedLocation || 'Wybierz lokalizację'} (ostatnie 24h)
+          {selectedLocation
+            ? t('dashboard.chartTitle', { location: selectedLocation })
+            : t('dashboard.chartPlaceholder')}
         </h2>
         {selectedLocation && locationMeasurements.length > 0 ? (
           <TemperatureChart measurements={locationMeasurements} />
         ) : (
-          <div className="no-data">Brak danych do wyświetlenia</div>
+          <div className="no-data">
+            {selectedLocation
+              ? t('dashboard.noRecentReadings')
+              : t('dashboard.noActiveLocations')}
+          </div>
         )}
       </section>
 
       <section className="sensors-section">
-        <h2 className="section-title">Status czujników</h2>
+        <h2 className="section-title">{t('dashboard.sensorsTitle')}</h2>
         <SensorStatusList
           sensors={sensors}
           onSensorClick={(sensor) => navigate(`/sensor/${sensor.id}`)}

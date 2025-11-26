@@ -30,6 +30,12 @@
   gap: 0.5rem;
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
 .nav-links {
   display: flex;
   gap: 2rem;
@@ -62,6 +68,11 @@
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
+  }
+
+  .nav-actions {
+    flex-direction: column;
+    gap: 0.75rem;
   }
 
   .nav-links {
