@@ -38,14 +38,12 @@ const Dashboard = () => {
       return;
     }
     try {
+      // Pobierz pomiary z ostatnich 24h dla wykresu (nie filtruj po czasie tutaj)
       const measurements = await sensorApi.getLocationMeasurements(location, 24);
-      const cutoff = Date.now() - ONE_HOUR_MS;
-      const recentMeasurements = measurements.filter(
-        (measurement) => new Date(measurement.timestamp).getTime() >= cutoff
-      );
-      setLocationMeasurements(recentMeasurements);
+      setLocationMeasurements(measurements);
     } catch (error) {
       console.error('Błąd ładowania pomiarów:', error);
+      setLocationMeasurements([]);
     }
   }, []);
 

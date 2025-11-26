@@ -17,18 +17,21 @@ const TemperatureChart = ({ measurements }: TemperatureChartProps) => {
   const chartData = useMemo(
     () =>
       measurements
-        .filter((m) => m.temperature !== null && m.humidity !== null)
+        .filter((m) => m.temperature !== null || m.humidity !== null)
         .map((m) => ({
           time: format(new Date(m.timestamp), 'HH:mm', { locale: dateLocale }),
           timestamp: new Date(m.timestamp).getTime(),
-          temperature: m.temperature as number,
-          humidity: m.humidity as number,
+          temperature: m.temperature !== null ? m.temperature : undefined,
+          humidity: m.humidity !== null ? m.humidity : undefined,
         }))
         .sort((a, b) => a.timestamp - b.timestamp),
     [measurements, dateLocale]
   );
 
-  if (chartData.length === 0) {
+  const hasTemperature = chartData.some((d) => d.temperature !== undefined);
+  const hasHumidity = chartData.some((d) => d.humidity !== undefined);
+
+  if (chartData.length === 0 || (!hasTemperature && !hasHumidity)) {
     return (
       <div className="no-data">
         {measurements.length === 0
@@ -49,20 +52,24 @@ const TemperatureChart = ({ measurements }: TemperatureChartProps) => {
             style={{ fontSize: '12px' }}
             interval="preserveStartEnd"
           />
-          <YAxis
-            yAxisId="temp"
-            orientation="left"
-            stroke="#e74c3c"
-            label={{ value: t('chart.temperatureAxis'), angle: -90, position: 'insideLeft' }}
-            style={{ fontSize: '12px' }}
-          />
-          <YAxis
-            yAxisId="humidity"
-            orientation="right"
-            stroke="#3498db"
-            label={{ value: t('chart.humidityAxis'), angle: 90, position: 'insideRight' }}
-            style={{ fontSize: '12px' }}
-          />
+          {hasTemperature && (
+            <YAxis
+              yAxisId="temp"
+              orientation="left"
+              stroke="#e74c3c"
+              label={{ value: t('chart.temperatureAxis'), angle: -90, position: 'insideLeft' }}
+              style={{ fontSize: '12px' }}
+            />
+          )}
+          {hasHumidity && (
+            <YAxis
+              yAxisId="humidity"
+              orientation="right"
+              stroke="#3498db"
+              label={{ value: t('chart.humidityAxis'), angle: 90, position: 'insideRight' }}
+              style={{ fontSize: '12px' }}
+            />
+          )}
           <Tooltip
             contentStyle={{
               backgroundColor: 'white',
@@ -80,26 +87,32 @@ const TemperatureChart = ({ measurements }: TemperatureChartProps) => {
             }}
           />
           <Legend />
-          <Line
-            yAxisId="temp"
-            type="monotone"
-            dataKey="temperature"
-            stroke="#e74c3c"
-            strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 6, fill: '#e74c3c' }}
-            name={t('chart.temperature')}
-          />
-          <Line
-            yAxisId="humidity"
-            type="monotone"
-            dataKey="humidity"
-            stroke="#3498db"
-            strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 6, fill: '#3498db' }}
-            name={t('chart.humidity')}
-          />
+          {hasTemperature && (
+            <Line
+              yAxisId="temp"
+              type="monotone"
+              dataKey="temperature"
+              stroke="#e74c3c"
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 6, fill: '#e74c3c' }}
+              name={t('chart.temperature')}
+              connectNulls={false}
+            />
+          )}
+          {hasHumidity && (
+            <Line
+              yAxisId="humidity"
+              type="monotone"
+              dataKey="humidity"
+              stroke="#3498db"
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 6, fill: '#3498db' }}
+              name={t('chart.humidity')}
+              connectNulls={false}
+            />
+          )}
         </LineChart>
       </ResponsiveContainer>
     </div>
