@@ -28,7 +28,8 @@ class DHT11ProcessingStrategyTest {
     @BeforeEach
     void setUp() {
         sensorMessage = new SensorMessage();
-        sensorMessage.setSensorTopic("temp_bathroom");
+        sensorMessage.setSensorId("sensor-1");
+        sensorMessage.setLocation("HOME_BATHROOM");
 
         dht11Data = mock(DHT11Data.class);
     }
@@ -57,30 +58,33 @@ class DHT11ProcessingStrategyTest {
         strategy.processSensorData(dht11Data, sensorMessage);
 
         // Then
-        verify(sensorMeasurementService).sendMeasurement("temp_bathroom", dht11Data);
+        verify(sensorMeasurementService).sendMeasurement(sensorMessage, dht11Data);
     }
 
     @Test
-    void shouldUseTopicFromMessage() {
+    void shouldUseMetadataFromMessage() {
         // Given
-        sensorMessage.setSensorTopic("temp_kitchen");
+        sensorMessage.setSensorId("sensor-2");
+        sensorMessage.setLocation("HOME_KITCHEN");
 
         // When
         strategy.processSensorData(dht11Data, sensorMessage);
 
         // Then
-        verify(sensorMeasurementService).sendMeasurement("temp_kitchen", dht11Data);
+        verify(sensorMeasurementService).sendMeasurement(sensorMessage, dht11Data);
     }
 
     @Test
     void shouldHandleDifferentSensors() {
         // Given
         SensorMessage message1 = new SensorMessage();
-        message1.setSensorTopic("temp_bathroom");
+        message1.setSensorId("sensor-1");
+        message1.setLocation("HOME_BATHROOM");
         DHT11Data data1 = mock(DHT11Data.class);
 
         SensorMessage message2 = new SensorMessage();
-        message2.setSensorTopic("temp_kitchen");
+        message2.setSensorId("sensor-2");
+        message2.setLocation("HOME_KITCHEN");
         DHT11Data data2 = mock(DHT11Data.class);
 
         // When
@@ -88,7 +92,7 @@ class DHT11ProcessingStrategyTest {
         strategy.processSensorData(data2, message2);
 
         // Then
-        verify(sensorMeasurementService).sendMeasurement("temp_bathroom", data1);
-        verify(sensorMeasurementService).sendMeasurement("temp_kitchen", data2);
+        verify(sensorMeasurementService).sendMeasurement(message1, data1);
+        verify(sensorMeasurementService).sendMeasurement(message2, data2);
     }
 }

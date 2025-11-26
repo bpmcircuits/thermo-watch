@@ -89,16 +89,19 @@ class SensorMessageTest {
     }
 
     @Test
-    void shouldSetAndGetSensorTopic() {
+    void shouldSetAndGetSensorIdAndLocation() {
         // Given
         SensorMessage message = new SensorMessage();
-        String topic = "temp_bathroom";
+        String sensorId = "device-123";
+        String location = "HOME_BATHROOM";
 
         // When
-        message.setSensorTopic(topic);
+        message.setSensorId(sensorId);
+        message.setLocation(location);
 
         // Then
-        assertEquals(topic, message.getSensorTopic());
+        assertEquals(sensorId, message.getSensorId());
+        assertEquals(location, message.getLocation());
     }
 
     @Test
@@ -152,6 +155,8 @@ class SensorMessageTest {
         SensorMessage message = new SensorMessage();
         message.setTime(LocalDateTime.of(2024, 1, 15, 10, 30, 45));
         message.setTemperatureUnit("C");
+        message.setSensorId("device-1");
+        message.setLocation("HOME_BATHROOM");
         message.addSensorData("TestSensor", "testValue");
 
         // When
@@ -161,6 +166,8 @@ class SensorMessageTest {
         assertTrue(result.contains("SensorMessage"));
         assertTrue(result.contains("time=2024-01-15T10:30:45"));
         assertTrue(result.contains("temperatureUnit='C'"));
+        assertTrue(result.contains("sensorId='device-1'"));
+        assertTrue(result.contains("location='HOME_BATHROOM'"));
         assertTrue(result.contains("sensorData="));
     }
 }

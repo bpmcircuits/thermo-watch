@@ -26,7 +26,7 @@ class AvailabilityProcessingStrategyTest {
     @BeforeEach
     void setUp() {
         sensorMessage = new SensorMessage();
-        sensorMessage.setSensorTopic("temp_bathroom");
+        sensorMessage.setSensorId("sensor-1");
     }
 
     @Test
@@ -56,7 +56,7 @@ class AvailabilityProcessingStrategyTest {
         strategy.processSensorData(null, sensorMessage);
 
         // Then
-        verify(sensorMeasurementService).sendAvailability("temp_bathroom", "Online");
+        verify(sensorMeasurementService).sendAvailability("sensor-1", "Online");
     }
 
     @Test
@@ -68,31 +68,31 @@ class AvailabilityProcessingStrategyTest {
         strategy.processSensorData(null, sensorMessage);
 
         // Then
-        verify(sensorMeasurementService).sendAvailability("temp_bathroom", "Offline");
+        verify(sensorMeasurementService).sendAvailability("sensor-1", "Offline");
     }
 
     @Test
-    void shouldUseTopicFromMessage() {
+    void shouldUseSensorIdFromMessage() {
         // Given
-        sensorMessage.setSensorTopic("temp_kitchen");
+        sensorMessage.setSensorId("sensor-2");
         sensorMessage.setAvailability("Online");
 
         // When
         strategy.processSensorData(null, sensorMessage);
 
         // Then
-        verify(sensorMeasurementService).sendAvailability("temp_kitchen", "Online");
+        verify(sensorMeasurementService).sendAvailability("sensor-2", "Online");
     }
 
     @Test
     void shouldHandleDifferentSensors() {
         // Given
         SensorMessage message1 = new SensorMessage();
-        message1.setSensorTopic("temp_bathroom");
+        message1.setSensorId("sensor-1");
         message1.setAvailability("Online");
 
         SensorMessage message2 = new SensorMessage();
-        message2.setSensorTopic("temp_kitchen");
+        message2.setSensorId("sensor-2");
         message2.setAvailability("Offline");
 
         // When
@@ -100,8 +100,8 @@ class AvailabilityProcessingStrategyTest {
         strategy.processSensorData(null, message2);
 
         // Then
-        verify(sensorMeasurementService).sendAvailability("temp_bathroom", "Online");
-        verify(sensorMeasurementService).sendAvailability("temp_kitchen", "Offline");
+        verify(sensorMeasurementService).sendAvailability("sensor-1", "Online");
+        verify(sensorMeasurementService).sendAvailability("sensor-2", "Offline");
     }
 
     @Test
@@ -114,7 +114,7 @@ class AvailabilityProcessingStrategyTest {
         strategy.processSensorData(someData, sensorMessage);
 
         // Then
-        verify(sensorMeasurementService).sendAvailability("temp_bathroom", "Online");
+        verify(sensorMeasurementService).sendAvailability("sensor-1", "Online");
     }
 
     @Test
@@ -126,6 +126,6 @@ class AvailabilityProcessingStrategyTest {
         strategy.processSensorData(null, sensorMessage);
 
         // Then
-        verify(sensorMeasurementService).sendAvailability("temp_bathroom", null);
+        verify(sensorMeasurementService).sendAvailability("sensor-1", null);
     }
 }

@@ -37,8 +37,9 @@ class SensorMessageParserTest {
                     }
                 }
                 """;
-        sensorTopic = "tele/temp_bathroom/SENSOR";
-        lwtTopic = "tele/temp_bathroom/LWT";
+        // zgodne z implementacją: tele/{site}/{room}/{deviceId}/SENSOR
+        sensorTopic = "tele/HOME/BATHROOM/device-1/SENSOR";
+        lwtTopic = "tele/HOME/BATHROOM/device-1/LWT";
     }
 
     @Test
@@ -52,7 +53,8 @@ class SensorMessageParserTest {
 
         // Then
         assertNotNull(result);
-        assertEquals("temp_bathroom", result.getSensorTopic());
+        assertEquals("device-1", result.getSensorId());
+        assertEquals("HOME_BATHROOM", result.getLocation());
         verify(objectMapper).readValue(sensorPayload, SensorMessage.class);
     }
 
@@ -66,7 +68,8 @@ class SensorMessageParserTest {
 
         // Then
         assertNotNull(result);
-        assertEquals("temp_bathroom", result.getSensorTopic());
+        assertEquals("device-1", result.getSensorId());
+        assertEquals("HOME_BATHROOM", result.getLocation());
         assertEquals("Online", result.getAvailability());
         verifyNoInteractions(objectMapper);
     }
@@ -77,11 +80,12 @@ class SensorMessageParserTest {
         String availability = "Offline";
 
         // When
-        SensorMessage result = parser.parse("tele/temp_kitchen/LWT", availability);
+        SensorMessage result = parser.parse("tele/HOME/KITCHEN/device-2/LWT", availability);
 
         // Then
         assertNotNull(result);
-        assertEquals("temp_kitchen", result.getSensorTopic());
+        assertEquals("device-2", result.getSensorId());
+        assertEquals("HOME_KITCHEN", result.getLocation());
         assertEquals("Offline", result.getAvailability());
     }
 
@@ -92,32 +96,35 @@ class SensorMessageParserTest {
         when(objectMapper.readValue(anyString(), eq(SensorMessage.class))).thenReturn(expectedMessage);
 
         // When
-        SensorMessage result = parser.parse("tele/temp_livingroom/SENSOR", sensorPayload);
+        SensorMessage result = parser.parse("tele/HOME/LIVINGROOM/device-3/SENSOR", sensorPayload);
 
         // Then
-        assertEquals("temp_livingroom", result.getSensorTopic());
+        assertEquals("device-3", result.getSensorId());
+        assertEquals("HOME_LIVINGROOM", result.getLocation());
     }
 
     @Test
     void shouldExtractLocationFromLwtTopic() {
         // When
-        SensorMessage result = parser.parse("tele/temp_kitchen/LWT", "Online");
+        SensorMessage result = parser.parse("tele/HOME/KITCHEN/device-4/LWT", "Online");
 
         // Then
-        assertEquals("temp_kitchen", result.getSensorTopic());
+        assertEquals("device-4", result.getSensorId());
+        assertEquals("HOME_KITCHEN", result.getLocation());
     }
 
     @Test
-    void shouldHandleTopicWithoutSlashes() throws Exception {
+    void shouldHandleTopicWithoutSlashesGracefully() throws Exception {
         // Given
         SensorMessage expectedMessage = new SensorMessage();
         when(objectMapper.readValue(anyString(), eq(SensorMessage.class))).thenReturn(expectedMessage);
 
         // When
-        SensorMessage result = parser.parse("temp_bathroom", sensorPayload);
+        SensorMessage result = parser.parse("invalidTopic", sensorPayload);
 
         // Then
-        assertEquals("temp_bathroom", result.getSensorTopic());
+        assertNull(result.getSensorId());
+        assertNull(result.getLocation());
     }
 
     @Test
@@ -168,25 +175,30 @@ class SensorMessageParserTest {
                 .thenReturn(message2);
 
         // When
-        SensorMessage result1 = parser.parse("tele/temp_bathroom/SENSOR", sensorPayload);
-        SensorMessage result2 = parser.parse("tele/temp_kitchen/SENSOR", sensorPayload);
+        SensorMessage result1 = parser.parse("tele/HOME/BATHROOM/device-1/SENSOR", sensorPayload);
+        SensorMessage result2 = parser.parse("tele/HOME/KITCHEN/device-2/SENSOR", sensorPayload);
 
         // Then
-        assertEquals("temp_bathroom", result1.getSensorTopic());
-        assertEquals("temp_kitchen", result2.getSensorTopic());
+        assertEquals("device-1", result1.getSensorId());
+        assertEquals("HOME_BATHROOM", result1.getLocation());
+        assertEquals("device-2", result2.getSensorId());
+        assertEquals("HOME_KITCHEN", result2.getLocation());
         verify(objectMapper, times(2)).readValue(anyString(), eq(SensorMessage.class));
     }
 
     @Test
     void shouldHandleMultipleAvailabilityMessages() {
         // When
-        SensorMessage result1 = parser.parse("tele/temp_bathroom/LWT", "Online");
-        SensorMessage result2 = parser.parse("tele/temp_kitchen/LWT", "Offline");
+        SensorMessage result1 = parser.parse("tele/HOME/BATHROOM/device-1/LWT", "Online");
+        SensorMessage result2 = parser.parse("tele/HOME/KITCHEN/device-2/LWT", "Offline");
 
         // Then
-        assertEquals("temp_bathroom", result1.getSensorTopic());
+        assertEquals("device-1", result1.getSensorId());
+        assertEquals("HOME_BATHROOM", result1.getLocation());
         assertEquals("Online", result1.getAvailability());
-        assertEquals("temp_kitchen", result2.getSensorTopic());
+
+        assertEquals("device-2", result2.getSensorId());
+        assertEquals("HOME_KITCHEN", result2.getLocation());
         assertEquals("Offline", result2.getAvailability());
     }
 }

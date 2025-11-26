@@ -3,6 +3,7 @@ package com.bpm.mqttingestservice.rabbit.service;
 import com.bpm.events.dto.SensorAvailabilityEvent;
 import com.bpm.events.dto.SensorMeasurementEvent;
 import com.bpm.mqttingestservice.domain.SensorData;
+import com.bpm.mqttingestservice.domain.SensorMessage;
 import com.bpm.mqttingestservice.rabbit.mapper.SensorMeasurementMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,37 +56,43 @@ class SensorMeasurementServiceTest {
     @Test
     void shouldSendMeasurementMeasurementEvent() {
         // Given
-        String topic = "temp_bathroom";
+        SensorMessage message = new SensorMessage();
+        message.setSensorId("sensor-001");
+        message.setLocation("HOME_BATHROOM");
+
         SensorData sensorData = mock(SensorData.class);
         SensorMeasurementEvent event = new SensorMeasurementEvent(
                 "DHT11",
                 "sensor-001",
-                topic,
+                "HOME_BATHROOM",
                 new BigDecimal("23.5"),
                 new BigDecimal("60.0"),
                 new BigDecimal("15.2"),
                 LocalDateTime.now()
         );
-        when(sensorMeasurementMapper.mapToSensorMeasurementEvent(topic, sensorData)).thenReturn(event);
+        when(sensorMeasurementMapper.mapToSensorMeasurementEvent(message, sensorData)).thenReturn(event);
 
         // When
-        service.sendMeasurement(topic, sensorData);
+        service.sendMeasurement(message, sensorData);
 
         // Then
-        verify(sensorMeasurementMapper).mapToSensorMeasurementEvent(topic, sensorData);
+        verify(sensorMeasurementMapper).mapToSensorMeasurementEvent(message, sensorData);
         verify(rabbitTemplate).convertAndSend(exchangeName, measurementRoutingKey, event);
     }
 
     @Test
     void shouldUseCorrectExchangeAndRoutingKeyForMeasurement() {
         // Given
-        String topic = "temp_livingroom";
+        SensorMessage message = new SensorMessage();
+        message.setSensorId("sensor-002");
+        message.setLocation("HOME_LIVINGROOM");
+
         SensorData sensorData = mock(SensorData.class);
         SensorMeasurementEvent event = mock(SensorMeasurementEvent.class);
-        when(sensorMeasurementMapper.mapToSensorMeasurementEvent(topic, sensorData)).thenReturn(event);
+        when(sensorMeasurementMapper.mapToSensorMeasurementEvent(message, sensorData)).thenReturn(event);
 
         // When
-        service.sendMeasurement(topic, sensorData);
+        service.sendMeasurement(message, sensorData);
 
         // Then
         verify(rabbitTemplate).convertAndSend(
@@ -98,11 +105,11 @@ class SensorMeasurementServiceTest {
     @Test
     void shouldSendMeasurementAvailabilityEvent() {
         // Given
-        String sensorLocation = "temp_bathroom";
+        String sensorId = "sensor-001";
         String status = "online";
 
         // When
-        service.sendAvailability(sensorLocation, status);
+        service.sendAvailability(sensorId, status);
 
         // Then
         verify(rabbitTemplate).convertAndSend(
@@ -112,7 +119,7 @@ class SensorMeasurementServiceTest {
         );
 
         SensorAvailabilityEvent capturedEvent = availabilityEventCaptor.getValue();
-        assertEquals(sensorLocation, capturedEvent.sensorId());
+        assertEquals(sensorId, capturedEvent.sensorId());
         assertEquals(status, capturedEvent.status());
         assertEquals("MQTT_LWT", capturedEvent.source());
         assertNotNull(capturedEvent.timestamp());
@@ -121,11 +128,11 @@ class SensorMeasurementServiceTest {
     @Test
     void shouldSendMeasurementAvailabilityWithOfflineStatus() {
         // Given
-        String sensorLocation = "temp_kitchen";
+        String sensorId = "sensor-002";
         String status = "offline";
 
         // When
-        service.sendAvailability(sensorLocation, status);
+        service.sendAvailability(sensorId, status);
 
         // Then
         verify(rabbitTemplate).convertAndSend(
@@ -135,18 +142,18 @@ class SensorMeasurementServiceTest {
         );
 
         SensorAvailabilityEvent capturedEvent = availabilityEventCaptor.getValue();
-        assertEquals(sensorLocation, capturedEvent.sensorId());
+        assertEquals(sensorId, capturedEvent.sensorId());
         assertEquals("offline", capturedEvent.status());
     }
 
     @Test
     void shouldSetSourceAsMqttLwtInAvailabilityEvent() {
         // Given
-        String sensorLocation = "temp_bathroom";
+        String sensorId = "sensor-003";
         String status = "online";
 
         // When
-        service.sendAvailability(sensorLocation, status);
+        service.sendAvailability(sensorId, status);
 
         // Then
         verify(rabbitTemplate).convertAndSend(
@@ -161,18 +168,24 @@ class SensorMeasurementServiceTest {
     @Test
     void shouldHandleMultipleMeasurementSends() {
         // Given
-        String topic1 = "temp_bathroom";
-        String topic2 = "temp_livingroom";
+        SensorMessage message1 = new SensorMessage();
+        message1.setSensorId("sensor-1");
+        message1.setLocation("HOME_BATHROOM");
+
+        SensorMessage message2 = new SensorMessage();
+        message2.setSensorId("sensor-2");
+        message2.setLocation("HOME_LIVINGROOM");
+
         SensorData sensorData1 = mock(SensorData.class);
         SensorData sensorData2 = mock(SensorData.class);
         SensorMeasurementEvent event1 = mock(SensorMeasurementEvent.class);
         SensorMeasurementEvent event2 = mock(SensorMeasurementEvent.class);
-        when(sensorMeasurementMapper.mapToSensorMeasurementEvent(topic1, sensorData1)).thenReturn(event1);
-        when(sensorMeasurementMapper.mapToSensorMeasurementEvent(topic2, sensorData2)).thenReturn(event2);
+        when(sensorMeasurementMapper.mapToSensorMeasurementEvent(message1, sensorData1)).thenReturn(event1);
+        when(sensorMeasurementMapper.mapToSensorMeasurementEvent(message2, sensorData2)).thenReturn(event2);
 
         // When
-        service.sendMeasurement(topic1, sensorData1);
-        service.sendMeasurement(topic2, sensorData2);
+        service.sendMeasurement(message1, sensorData1);
+        service.sendMeasurement(message2, sensorData2);
 
         // Then
         verify(rabbitTemplate).convertAndSend(exchangeName, measurementRoutingKey, event1);
@@ -187,12 +200,12 @@ class SensorMeasurementServiceTest {
     @Test
     void shouldHandleMultipleAvailabilitySends() {
         // Given
-        String location1 = "temp_bathroom";
-        String location2 = "temp_kitchen";
+        String sensorId1 = "sensor-1";
+        String sensorId2 = "sensor-2";
 
         // When
-        service.sendAvailability(location1, "online");
-        service.sendAvailability(location2, "offline");
+        service.sendAvailability(sensorId1, "online");
+        service.sendAvailability(sensorId2, "offline");
 
         // Then
         verify(rabbitTemplate, times(2)).convertAndSend(

@@ -3,6 +3,7 @@ package com.bpm.mqttingestservice.rabbit.mapper;
 import com.bpm.events.dto.SensorMeasurementEvent;
 import com.bpm.mqttingestservice.domain.DHT11Data;
 import com.bpm.mqttingestservice.domain.SensorData;
+import com.bpm.mqttingestservice.domain.SensorMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,25 +28,31 @@ class SensorMeasurementMapperTest {
     @Test
     void shouldDelegateToStrategy() {
         // Given
-        String topic = "temp_bathroom";
+        SensorMessage message = new SensorMessage();
+        message.setSensorId("sensor-1");
+        message.setLocation("HOME_BATHROOM");
+
         DHT11Data data = mock(DHT11Data.class);
         SensorMeasurementEvent event = mock(SensorMeasurementEvent.class);
-        when(strategy.toMeasurementEvent(topic, data)).thenReturn(event);
+        when(strategy.toMeasurementEvent(message, data)).thenReturn(event);
 
         // When
-        SensorMeasurementEvent result = mapper.mapToSensorMeasurementEvent(topic, data);
+        SensorMeasurementEvent result = mapper.mapToSensorMeasurementEvent(message, data);
 
         // Then
         assertEquals(event, result);
-        verify(strategy).toMeasurementEvent(topic, data);
+        verify(strategy).toMeasurementEvent(message, data);
     }
 
     @Test
     void shouldThrowWhenSensorDataIsNull() {
+        // Given
+        SensorMessage message = new SensorMessage();
+
         // When & Then
         IllegalArgumentException ex = assertThrows(
                 IllegalArgumentException.class,
-                () -> mapper.mapToSensorMeasurementEvent("topic", null)
+                () -> mapper.mapToSensorMeasurementEvent(message, null)
         );
         assertEquals("sensorData cannot be null", ex.getMessage());
     }
