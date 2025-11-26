@@ -187,6 +187,9 @@ services:
       MQTT_PASS: ${MQTT_PASS}
     ports:
       - "8082:8082"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     depends_on:
       rabbitmq:
         condition: service_healthy
