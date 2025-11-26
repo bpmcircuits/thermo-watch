@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import { sensorApi } from '../services/api';
+import { parsePostgresTimestamp } from '../utils/dateUtils';
 import { Measurement, Sensor } from '../types';
 import TemperatureChart from './TemperatureChart';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -88,7 +89,7 @@ const SensorHistory = () => {
   const sortedMeasurements = useMemo(
     () =>
       [...measurements].sort(
-        (a, b) => parseISO(b.timestamp).getTime() - parseISO(a.timestamp).getTime()
+        (a, b) => parsePostgresTimestamp(b.timestamp).getTime() - parsePostgresTimestamp(a.timestamp).getTime()
       ),
     [measurements]
   );
@@ -146,7 +147,7 @@ const SensorHistory = () => {
           <div className="control-group meta">
             <span className="meta-label">{t('sensorHistory.lastSeen')}</span>
             <span className="meta-value">
-              {format(parseISO(selectedSensor.lastSeen), 'PPpp', { locale: dateLocale })}
+              {format(parsePostgresTimestamp(selectedSensor.lastSeen), 'PPpp', { locale: dateLocale })}
             </span>
           </div>
         )}
@@ -198,7 +199,7 @@ const SensorHistory = () => {
                 ) : (
                   latestMeasurements.map((measurement) => (
                     <tr key={measurement.id}>
-                      <td>{format(parseISO(measurement.timestamp), 'PPpp', { locale: dateLocale })}</td>
+                      <td>{format(parsePostgresTimestamp(measurement.timestamp), 'PPpp', { locale: dateLocale })}</td>
                       <td>
                         {measurement.temperature !== null && measurement.temperature !== undefined
                           ? measurement.temperature.toFixed(1)
