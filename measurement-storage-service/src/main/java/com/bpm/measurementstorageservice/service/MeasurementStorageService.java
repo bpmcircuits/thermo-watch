@@ -31,8 +31,10 @@ public class MeasurementStorageService {
                 .orElseGet(() -> RoomData.builder()
                         .location(event.location())
                         .build());
+
         room.setCurrentTemperature(event.temperature());
         room.setCurrentHumidity(event.humidity());
+        room.setSensorCount(countSensorsByLocation(event.location()));
         roomRepo.save(room);
 
         Sensor sensor = sensorRepo.findBySensorId(event.sensorId())
@@ -66,5 +68,9 @@ public class MeasurementStorageService {
             sensor.setLastSeen(event.timestamp());
             sensorRepo.save(sensor);
         }
+    }
+
+    private Integer countSensorsByLocation(String location) {
+        return sensorRepo.countByLocation(location);
     }
 }

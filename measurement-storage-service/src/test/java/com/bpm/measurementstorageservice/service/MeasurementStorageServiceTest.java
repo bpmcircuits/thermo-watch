@@ -478,4 +478,41 @@ class MeasurementStorageServiceTest {
         verify(sensorRepo).save(any(Sensor.class));
         verify(measurementRepo).save(any(Measurement.class));
     }
+
+    @Test
+    void shouldCountDifferentSensorsBySameLocation() {
+        // Given
+        RoomData savedRoom = RoomData.builder()
+                .id(1L)
+                .location("Living Room")
+                .build();
+
+        when(roomRepo.findByLocation("Living Room")).thenReturn(Optional.empty());
+        when(sensorRepo.findBySensorId("DHT11-001")).thenReturn(Optional.empty());
+
+        when(roomRepo.save(any(RoomData.class))).thenReturn(savedRoom);
+        when(sensorRepo.countByLocation("Living Room")).thenReturn(3);
+
+        SensorMeasurementEvent event = SensorMeasurementEvent.builder()
+                .sensorType("DHT11")
+                .sensorId("DHT11-001")
+                .location("Living Room")
+                .temperature(new BigDecimal("25.0"))
+                .humidity(new BigDecimal("60.0"))
+                .dewPoint(new BigDecimal("17.0"))
+                .timestamp(testTimestamp)
+                .build();
+
+        // When
+        service.storeMeasurement(event);
+
+        // Then
+        ArgumentCaptor<RoomData> roomCaptor = ArgumentCaptor.forClass(RoomData.class);
+        verify(roomRepo).save(roomCaptor.capture());
+        RoomData capturedRoom = roomCaptor.getValue();
+
+        assertEquals("Living Room", capturedRoom.getLocation());
+        assertEquals(3, capturedRoom.getSensorCount());
+        verify(sensorRepo).countByLocation("Living Room");
+    }
 }
