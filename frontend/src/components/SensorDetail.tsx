@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { sensorApi } from '../services/api';
 import { SensorDetail as SensorDetailType } from '../types';
 import TemperatureChart from './TemperatureChart';
@@ -93,7 +93,7 @@ const SensorDetail = () => {
           <div className="meta-item">
             <span className="meta-label">{t('sensorDetail.lastUpdateLabel')}</span>
             <span className="meta-value">
-              {format(new Date(sensor.lastSeen), 'PPpp', { locale: dateLocale })}
+              {format(parseISO(sensor.lastSeen), 'PPpp', { locale: dateLocale })}
             </span>
           </div>
         </div>

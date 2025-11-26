@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Measurement } from '../types';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useTranslation } from '../i18n/useTranslation';
@@ -18,12 +18,15 @@ const TemperatureChart = ({ measurements }: TemperatureChartProps) => {
     () =>
       measurements
         .filter((m) => m.temperature !== null || m.humidity !== null)
-        .map((m) => ({
-          time: format(new Date(m.timestamp), 'HH:mm', { locale: dateLocale }),
-          timestamp: new Date(m.timestamp).getTime(),
-          temperature: m.temperature !== null ? m.temperature : undefined,
-          humidity: m.humidity !== null ? m.humidity : undefined,
-        }))
+        .map((m) => {
+          const date = parseISO(m.timestamp);
+          return {
+            time: format(date, 'HH:mm', { locale: dateLocale }),
+            timestamp: date.getTime(),
+            temperature: m.temperature !== null ? m.temperature : undefined,
+            humidity: m.humidity !== null ? m.humidity : undefined,
+          };
+        })
         .sort((a, b) => a.timestamp - b.timestamp),
     [measurements, dateLocale]
   );
