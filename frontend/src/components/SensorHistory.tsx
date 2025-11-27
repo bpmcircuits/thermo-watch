@@ -9,12 +9,16 @@ import { useTranslation } from '../i18n/useTranslation';
 import './SensorHistory.css';
 
 type HistoryRangeKey =
+  | 'history.range.6h'
+  | 'history.range.12h'
   | 'history.range.24h'
   | 'history.range.3d'
   | 'history.range.7d'
   | 'history.range.30d';
 
 const RANGE_OPTIONS: { labelKey: HistoryRangeKey; value: number }[] = [
+  { labelKey: 'history.range.6h', value: 6 },
+  { labelKey: 'history.range.12h', value: 12 },
   { labelKey: 'history.range.24h', value: 24 },
   { labelKey: 'history.range.3d', value: 72 },
   { labelKey: 'history.range.7d', value: 168 },
