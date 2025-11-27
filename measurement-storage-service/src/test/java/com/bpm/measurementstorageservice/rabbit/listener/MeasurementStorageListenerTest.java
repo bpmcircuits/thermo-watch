@@ -50,38 +50,6 @@ class MeasurementStorageListenerTest {
     }
 
     @Test
-    void shouldHandleAvailabilityOnlineEvent() {
-        // Given
-        SensorAvailabilityEvent event = SensorAvailabilityEvent.builder()
-                .source("DHT11-001")
-                .status("online")
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        // When
-        listener.handleAvailability(event);
-
-        // Then
-        verify(measurementStorageService).storeAvailability(event);
-    }
-
-    @Test
-    void shouldHandleAvailabilityOfflineEvent() {
-        // Given
-        SensorAvailabilityEvent event = SensorAvailabilityEvent.builder()
-                .source("DHT11-002")
-                .status("offline")
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        // When
-        listener.handleAvailability(event);
-
-        // Then
-        verify(measurementStorageService).storeAvailability(event);
-    }
-
-    @Test
     void shouldHandleMeasurementWithNullHumidity() {
         // Given
         SensorMeasurementEvent event = SensorMeasurementEvent.builder()
@@ -141,23 +109,6 @@ class MeasurementStorageListenerTest {
     }
 
     @Test
-    void shouldPropagateExceptionForAvailability() {
-        // Given
-        SensorAvailabilityEvent event = SensorAvailabilityEvent.builder()
-                .source("DHT11-001")
-                .status("online")
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        doThrow(new RuntimeException("Database error"))
-                .when(measurementStorageService).storeAvailability(any());
-
-        // When & Then
-        assertThrows(RuntimeException.class, () -> listener.handleAvailability(event));
-        verify(measurementStorageService).storeAvailability(event);
-    }
-
-    @Test
     void shouldHandleMultipleMeasurements() {
         // Given
         SensorMeasurementEvent event1 = SensorMeasurementEvent.builder()
@@ -184,32 +135,6 @@ class MeasurementStorageListenerTest {
         verify(measurementStorageService).storeMeasurement(event1);
         verify(measurementStorageService).storeMeasurement(event2);
         verify(measurementStorageService, times(2)).storeMeasurement(any());
-    }
-
-    @Test
-    void shouldHandleMultipleAvailabilityChanges() {
-        // Given
-        LocalDateTime now = LocalDateTime.now();
-        SensorAvailabilityEvent event1 = SensorAvailabilityEvent.builder()
-                .sensorId("DHT11-001")
-                .status("online")
-                .timestamp(now)
-                .build();
-
-        SensorAvailabilityEvent event2 = SensorAvailabilityEvent.builder()
-                .sensorId("DHT11-001")
-                .status("offline")
-                .timestamp(now.plusMinutes(5))
-                .build();
-
-        // When
-        listener.handleAvailability(event1);
-        listener.handleAvailability(event2);
-
-        // Then
-        verify(measurementStorageService).storeAvailability(event1);
-        verify(measurementStorageService).storeAvailability(event2);
-        verify(measurementStorageService, times(2)).storeAvailability(any());
     }
 
     @Test

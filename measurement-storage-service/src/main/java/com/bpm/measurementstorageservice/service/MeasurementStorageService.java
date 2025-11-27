@@ -59,17 +59,6 @@ public class MeasurementStorageService {
         measurementRepo.save(m);
     }
 
-    @Transactional
-    public void storeAvailability(SensorAvailabilityEvent event) {
-        Sensor sensor = sensorRepo.findBySensorId(event.sensorId()).orElse(null);
-
-        if (sensor != null) {
-            sensor.setIsOnline(event.status().equalsIgnoreCase("ONLINE"));
-            sensor.setLastSeen(event.timestamp());
-            sensorRepo.save(sensor);
-        }
-    }
-
     private Integer countSensorsByLocation(String location) {
         return sensorRepo.countByLocation(location);
     }
