@@ -82,7 +82,7 @@ const SensorHistory = () => {
   }, [selectedSensorId, hoursRange]);
 
   const selectedSensor = useMemo(
-    () => sensors.find((sensor) => sensor.id === selectedSensorId) || null,
+    () => sensors.find((sensor) => String(sensor.id) === String(selectedSensorId)) || null,
     [sensors, selectedSensorId]
   );
 
@@ -143,14 +143,14 @@ const SensorHistory = () => {
           </select>
         </div>
 
-        {selectedSensor && (
+        {selectedSensor ? (
           <div className="control-group meta">
             <span className="meta-label">{t('sensorHistory.lastSeen')}</span>
             <span className="meta-value">
               {format(parseBackendTimestamp(selectedSensor.lastSeen), 'PPpp', { locale: dateLocale })}
             </span>
           </div>
-        )}
+        ) : null}
       </section>
 
       {error && (
