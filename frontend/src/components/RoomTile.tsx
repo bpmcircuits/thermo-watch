@@ -20,14 +20,21 @@ const RoomTile = ({ room, onClick, isSelected }: RoomTileProps) => {
         <h3 className="room-name">{room.location}</h3>
         <span className="sensor-count">
           {
-            room.sensorCount > 1 ? t('roomTile.sensorCountMultiple', { count: room.sensorCount }) 
-              : t('roomTile.sensorCountOne', { count: room.sensorCount })
+            room.sensorCount === 1
+              ? t('roomTile.sensorCountOne', { count: room.sensorCount })
+              : room.sensorCount >= 2 && room.sensorCount <= 4
+              ? t('roomTile.sensorCountFew', { count: room.sensorCount })
+              : t('roomTile.sensorCountMany', { count: room.sensorCount })
           }
         </span>
       </div>
       <div className="room-metrics">
         <div className="metric">
-          <span className="metric-label">{t('roomTile.temperature')}</span>
+          <span className="metric-label">
+            {room.sensorCount > 1 
+              ? t('roomTile.averageTemperature')
+              : t('roomTile.temperature')}
+          </span>
           <span className="metric-value temperature">
             {room.currentTemperature !== null 
               ? `${room.currentTemperature.toFixed(1)}°C`
