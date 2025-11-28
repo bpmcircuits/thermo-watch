@@ -2,7 +2,7 @@ spring:
   application:
     name: measurement-query-service
   config:
-    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://localhost:8081}
+    import: ${SPRING_CONFIG_IMPORT:optional:configserver:http://config-service:8081}
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/measurement_db}
     username: ${POSTGRES_USER}
@@ -18,7 +18,7 @@ spring:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://localhost:8761/eureka}
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE:http://discovery-service:8761/eureka}
 
 server:
   port: 8084
