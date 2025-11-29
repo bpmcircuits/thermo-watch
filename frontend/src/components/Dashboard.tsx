@@ -11,113 +11,127 @@ import './Dashboard.css';
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
 
+// Pomocnicza funkcja do określenia, czy sensor jest aktywny
+const isSensorActive = (sensor: Sensor, now: number) =>
+    sensor.isOnline &&
+    now - parseBackendTimestamp(sensor.lastSeen).getTime() <= ONE_HOUR_MS;
+
 interface SensorMeasurements {
-  sensor: Sensor;
-  measurements: Measurement[];
+    sensor: Sensor;
+    measurements: Measurement[];
 }
 
 const Dashboard = () => {
-  const [rooms, setRooms] = useState<RoomData[]>([]);
-  const [sensors, setSensors] = useState<Sensor[]>([]);
-  const [selectedLocation, setSelectedLocation] = useState<string>('');
-  const [sensorMeasurements, setSensorMeasurements] = useState<SensorMeasurements[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingCharts, setLoadingCharts] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  const navigate = useNavigate();
-  const selectedLocationRef = useRef<string>('');
-  const { t } = useTranslation();
-  
-  // Aktualizuj ref przy każdej zmianie selectedLocation
-  useEffect(() => {
-    selectedLocationRef.current = selectedLocation;
-  }, [selectedLocation]);
+    const [rooms, setRooms] = useState<RoomData[]>([]);
+    const [sensors, setSensors] = useState<Sensor[]>([]);
+    const [selectedLocation, setSelectedLocation] = useState<string>('');
+    const [sensorMeasurements, setSensorMeasurements] = useState<SensorMeasurements[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [loadingCharts, setLoadingCharts] = useState(false);
+    const [hasError, setHasError] = useState(false);
+    const navigate = useNavigate();
+    const selectedLocationRef = useRef<string>('');
+    const { t } = useTranslation();
 
-  useEffect(() => {
-    loadData();
-    const interval = setInterval(loadData, 30000); // Odśwież co 30 sekund
-    return () => clearInterval(interval);
-  }, []);
+    // Aktualizuj ref przy każdej zmianie selectedLocation
+    useEffect(() => {
+        selectedLocationRef.current = selectedLocation;
+    }, [selectedLocation]);
 
-  const loadSensorMeasurements = useCallback(async (location: string) => {
-    if (!location) {
-      setSensorMeasurements([]);
-      return;
-    }
-    try {
-      setLoadingCharts(true);
-      // Pobierz wszystkie czujniki dla wybranej lokalizacji
-      const locationSensors = sensors.filter((sensor) => sensor.location === location);
-      
-      // Dla każdego czujnika pobierz jego pomiary
-      const measurementsPromises = locationSensors.map(async (sensor) => {
-        try {
-          const measurements = await sensorApi.getSensorMeasurements(sensor.id, 24);
-          return { sensor, measurements };
-        } catch (error) {
-          console.error(`Błąd ładowania pomiarów dla czujnika ${sensor.id}:`, error);
-          return { sensor, measurements: [] };
+    const loadSensorMeasurements = useCallback(
+        async (location: string) => {
+            if (!location) {
+                setSensorMeasurements([]);
+                return;
+            }
+            try {
+                setLoadingCharts(true);
+
+                const now = Date.now();
+
+                // Pobierz wszystkie AKTYWNE czujniki dla wybranej lokalizacji
+                const locationSensors = sensors.filter(
+                    (sensor) => sensor.location === location && isSensorActive(sensor, now)
+                );
+
+                // Dla każdego czujnika pobierz jego pomiary
+                const measurementsPromises = locationSensors.map(async (sensor) => {
+                    try {
+                        const measurements = await sensorApi.getSensorMeasurements(sensor.id, 24);
+                        return { sensor, measurements };
+                    } catch (error) {
+                        console.error(`Błąd ładowania pomiarów dla czujnika ${sensor.id}:`, error);
+                        return { sensor, measurements: [] };
+                    }
+                });
+
+                const results = await Promise.all(measurementsPromises);
+                setSensorMeasurements(results);
+            } catch (error) {
+                console.error('Błąd ładowania pomiarów:', error);
+                setSensorMeasurements([]);
+            } finally {
+                setLoadingCharts(false);
+            }
+        },
+        [sensors]
+    );
+
+    useEffect(() => {
+        if (selectedLocation) {
+            loadSensorMeasurements(selectedLocation);
+        } else {
+            setSensorMeasurements([]);
         }
-      });
-      
-      const results = await Promise.all(measurementsPromises);
-      setSensorMeasurements(results);
-    } catch (error) {
-      console.error('Błąd ładowania pomiarów:', error);
-      setSensorMeasurements([]);
-    } finally {
-      setLoadingCharts(false);
-    }
-  }, [sensors]);
+    }, [selectedLocation, loadSensorMeasurements]);
 
-  useEffect(() => {
-    if (selectedLocation) {
-      loadSensorMeasurements(selectedLocation);
-    } else {
-      setSensorMeasurements([]);
-    }
-  }, [selectedLocation, loadSensorMeasurements]);
+    const loadData = async () => {
+        try {
+            setHasError(false);
+            const [roomsData, sensorsData] = await Promise.all([
+                sensorApi.getRoomsData(),
+                sensorApi.getAllSensors(),
+            ]);
 
-  const loadData = async () => {
-    try {
-      setHasError(false);
-      const [roomsData, sensorsData] = await Promise.all([
-        sensorApi.getRoomsData(),
-        sensorApi.getAllSensors(),
-      ]);
-      const now = Date.now();
-      const activeSensors = sensorsData.filter(
-        (sensor) => now - parseBackendTimestamp(sensor.lastSeen).getTime() <= ONE_HOUR_MS
-      );
-      setSensors(activeSensors);
+            const now = Date.now();
 
-      const activeLocations = new Set(activeSensors.map((sensor) => sensor.location));
-      const activeRooms = roomsData.filter((room) => activeLocations.has(room.location));
-      setRooms(activeRooms);
-      
-      // Użyj ref do odczytania aktualnej wartości selectedLocation
-      const currentLocation = selectedLocationRef.current;
+            // Używaj tego samego kryterium aktywności, co przy ładowaniu pomiarów
+            const activeSensors = sensorsData.filter((sensor) => isSensorActive(sensor, now));
+            setSensors(activeSensors);
 
-      const locationStillActive =
-        currentLocation && activeRooms.some((room) => room.location === currentLocation);
-      const nextLocation = locationStillActive ? currentLocation : activeRooms[0]?.location || '';
+            const activeLocations = new Set(activeSensors.map((sensor) => sensor.location));
+            const activeRooms = roomsData.filter((room) => activeLocations.has(room.location));
+            setRooms(activeRooms);
 
-      if (nextLocation !== currentLocation) {
-        setSelectedLocation(nextLocation);
-      }
+            // Użyj ref do odczytania aktualnej wartości selectedLocation
+            const currentLocation = selectedLocationRef.current;
 
-      if (nextLocation) {
-        // loadSensorMeasurements zostanie wywołane przez useEffect
-      } else {
-        setSensorMeasurements([]);
-      }
-      setLoading(false);
-    } catch (error) {
-      console.error('Błąd ładowania danych:', error);
-      setHasError(true);
-      setLoading(false);
-    }
-  };
+            const locationStillActive =
+                currentLocation && activeRooms.some((room) => room.location === currentLocation);
+            const nextLocation =
+                locationStillActive ? currentLocation : activeRooms[0]?.location || '';
+
+            if (nextLocation !== currentLocation) {
+                setSelectedLocation(nextLocation);
+            }
+
+            if (!nextLocation) {
+                setSensorMeasurements([]);
+            }
+
+            setLoading(false);
+        } catch (error) {
+            console.error('Błąd ładowania danych:', error);
+            setHasError(true);
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadData();
+        const interval = setInterval(loadData, 30000); // Odśwież co 30 sekund
+        return () => clearInterval(interval);
+    }, []);
 
   if (loading) {
     return (
