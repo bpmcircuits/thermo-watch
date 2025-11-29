@@ -25,7 +25,8 @@ rabbitmq:
   exchange:
     name: sensor.exchange
   queue:
-    name: sensor.queue
+    measurement: sensor.measurement.queue
+    availability: sensor.availability.queue
   routing:
     measurement: sensor.tracking
     availability: sensor.availability

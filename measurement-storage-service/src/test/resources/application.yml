@@ -37,7 +37,8 @@ eureka:
 
 rabbitmq:
   queue:
-    name: test.measurements.queue
+    measurement: test.measurements.queue
+    availability: test.availability.queue
   exchange:
     name: test.measurements.exchange
   routing:

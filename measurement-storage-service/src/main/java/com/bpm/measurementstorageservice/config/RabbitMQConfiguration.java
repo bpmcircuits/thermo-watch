@@ -15,20 +15,16 @@ import org.springframework.context.annotation.Profile;
 @Profile("!test")
 public class RabbitMQConfiguration {
 
-    @Value("${rabbitmq.queue.name}")
-    private String queueName;
     @Value("${rabbitmq.exchange.name}")
     private String exchangeName;
     @Value("${rabbitmq.routing.measurement}")
     private String measurementRoutingKey;
     @Value("${rabbitmq.routing.availability}")
     private String availabilityRoutingKey;
-
-    @Bean
-    public Queue queue() {
-        return QueueBuilder.durable(queueName)
-                .build();
-    }
+    @Value("${rabbitmq.queue.measurement}")
+    private String measurementQueueName;
+    @Value("${rabbitmq.queue.availability}")
+    private String availabilityQueueName;
 
     @Bean
     public TopicExchange exchange() {
@@ -38,15 +34,25 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
+    public Queue measurementQueue() {
+        return QueueBuilder.durable(measurementQueueName).build();
+    }
+
+    @Bean
+    public Queue availabilityQueue() {
+        return QueueBuilder.durable(availabilityQueueName).build();
+    }
+
+    @Bean
     public Binding measurementBinding() {
-        return BindingBuilder.bind(queue())
+        return BindingBuilder.bind(measurementQueue())
                 .to(exchange())
                 .with(measurementRoutingKey);
     }
 
     @Bean
     public Binding availabilityBinding() {
-        return BindingBuilder.bind(queue())
+        return BindingBuilder.bind(availabilityQueue())
                 .to(exchange())
                 .with(availabilityRoutingKey);
     }

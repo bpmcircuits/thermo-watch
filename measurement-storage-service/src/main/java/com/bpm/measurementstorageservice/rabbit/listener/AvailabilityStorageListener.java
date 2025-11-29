@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@RabbitListener(queues = "${rabbitmq.queue.name}")
+@RabbitListener(queues = "${rabbitmq.queue.availability}")
 public class AvailabilityStorageListener {
     private final AvailabilityStorageService availabilityStorageService;
 

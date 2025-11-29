@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-@RabbitListener(queues = "${rabbitmq.queue.name}")
+@RabbitListener(queues = "${rabbitmq.queue.measurement}")
 public class MeasurementStorageListener {
 
     private final MeasurementStorageService measurementStorageService;
