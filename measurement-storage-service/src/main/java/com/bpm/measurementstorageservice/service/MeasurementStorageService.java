@@ -34,6 +34,7 @@ public class MeasurementStorageService {
 
         room.setCurrentTemperature(event.temperature());
         room.setCurrentHumidity(event.humidity());
+        room.setCurrentPressure(event.pressure());
         room.setSensorCount(countSensorsByLocation(event.location()));
         roomRepo.save(room);
 
@@ -52,6 +53,7 @@ public class MeasurementStorageService {
                 .humidity(event.humidity())
                 .dewPoint(event.dewPoint())
                 .timestamp(event.timestamp())
+                .pressure(event.pressure())
                 .sensor(sensor)
                 .build();
 

@@ -3,6 +3,7 @@ package com.bpm.measurementqueryservice.domain;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,7 +19,7 @@ class SensorTest {
         setField(sensor, "sensorType", "DHT22");
         setField(sensor, "location", "Kitchen");
         setField(sensor, "timestamp", "2024-01-01T12:00:00");
-        setField(sensor, "lastSeen", "2024-01-01T12:30:00");
+        setField(sensor, "lastSeen", LocalDateTime.of(2024, 1, 1, 12, 30));
         setField(sensor, "isOnline", true);
         setField(sensor, "roomDataId", 1L);
 
@@ -40,7 +41,7 @@ class SensorTest {
         assertEquals("DHT22", sensor.getSensorType());
         assertEquals("Kitchen", sensor.getLocation());
         assertEquals("2024-01-01T12:00:00", sensor.getTimestamp());
-        assertEquals("2024-01-01T12:30:00", sensor.getLastSeen());
+        assertEquals(LocalDateTime.of(2024, 1, 1, 12, 30), sensor.getLastSeen());
         assertTrue(sensor.getIsOnline());
         assertEquals(1L, sensor.getRoomDataId());
     }

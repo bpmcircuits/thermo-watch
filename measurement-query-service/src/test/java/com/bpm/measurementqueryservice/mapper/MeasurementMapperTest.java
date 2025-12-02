@@ -52,7 +52,7 @@ class MeasurementMapperTest {
         assertEquals("1", result.sensorId());
         assertEquals(22.50, result.temperature());
         assertEquals(45.00, result.humidity());
-        assertEquals("2024-01-01T12:00", result.timestamp());
+        assertEquals("2024-01-01 12:00:00", result.timestamp());
     }
 
     @Test

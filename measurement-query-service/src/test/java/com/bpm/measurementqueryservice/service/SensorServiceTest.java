@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Constructor;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,7 +37,7 @@ class SensorServiceTest {
         setField(sensor, "sensorId", "TEST-001");
         setField(sensor, "sensorType", "DHT22");
         setField(sensor, "location", "Kitchen");
-        setField(sensor, "lastSeen", "2024-01-01T12:00:00");
+        setField(sensor, "lastSeen", LocalDateTime.of(2024, 1, 1, 12, 0));
         setField(sensor, "isOnline", true);
 
         return sensor;

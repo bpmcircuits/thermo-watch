@@ -29,26 +29,34 @@ const RoomTile = ({ room, onClick, isSelected }: RoomTileProps) => {
         </span>
       </div>
       <div className="room-metrics">
-        <div className="metric">
-          <span className="metric-label">
-            {room.sensorCount > 1 
-              ? t('roomTile.averageTemperature')
-              : t('roomTile.temperature')}
-          </span>
-          <span className="metric-value temperature">
-            {room.currentTemperature !== null 
-              ? `${room.currentTemperature.toFixed(1)}°C`
-              : t('roomTile.noData')}
-          </span>
-        </div>
-        <div className="metric">
-          <span className="metric-label">{t('roomTile.humidity')}</span>
-          <span className="metric-value humidity">
-            {room.currentHumidity !== null 
-              ? `${room.currentHumidity.toFixed(1)}%`
-              : t('roomTile.noData')}
-          </span>
-        </div>
+        {room.currentTemperature !== null && (
+          <div className="metric">
+            <span className="metric-label">
+              {room.sensorCount > 1 
+                ? t('roomTile.averageTemperature')
+                : t('roomTile.temperature')}
+            </span>
+            <span className="metric-value temperature">
+              {room.currentTemperature.toFixed(1)}°C
+            </span>
+          </div>
+        )}
+        {room.currentHumidity !== null && (
+          <div className="metric">
+            <span className="metric-label">{t('roomTile.humidity')}</span>
+            <span className="metric-value humidity">
+              {room.currentHumidity.toFixed(1)}%
+            </span>
+          </div>
+        )}
+        {room.currentPressure !== null && (
+          <div className="metric">
+            <span className="metric-label">{t('roomTile.pressure')}</span>
+            <span className="metric-value pressure">
+              {room.currentPressure.toFixed(1)}&nbsp;hPa
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ public record SensorMeasurementEvent(
         BigDecimal temperature,
         BigDecimal humidity,
         BigDecimal dewPoint,
+        BigDecimal pressure,
         LocalDateTime timestamp
 ) {
 }

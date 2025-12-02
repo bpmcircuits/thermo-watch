@@ -65,12 +65,17 @@ const generateMeasurements = (sensorId: string, hours: number = 24): Measurement
   // Bazowe wartości z lekkimi wariacjami per czujnik
   const baseTemp = 20 + (sensorId.charCodeAt(sensorId.length - 1) % 5);
   const baseHumidity = 45 + (sensorId.charCodeAt(sensorId.length - 1) % 15);
+  const basePressure = 1013 + (sensorId.charCodeAt(sensorId.length - 1) % 10);
+  
+  // Niektóre czujniki mają ciśnienie, niektóre nie
+  const hasPressure = sensorId.includes('SENSOR-001') || sensorId.includes('SENSOR-003');
 
   for (let i = count; i >= 0; i--) {
     const timestamp = new Date(now - i * interval);
     // Symulacja naturalnych wahań temperatury i wilgotności
     const tempVariation = Math.sin((i / count) * Math.PI * 2) * 3;
     const humidityVariation = Math.cos((i / count) * Math.PI * 2) * 5;
+    const pressureVariation = Math.sin((i / count) * Math.PI * 4) * 5;
     const randomNoise = (Math.random() - 0.5) * 1.5;
 
     measurements.push({
@@ -78,6 +83,7 @@ const generateMeasurements = (sensorId: string, hours: number = 24): Measurement
       sensorId,
       temperature: Number((baseTemp + tempVariation + randomNoise).toFixed(1)),
       humidity: Number((baseHumidity + humidityVariation + randomNoise * 2).toFixed(1)),
+      pressure: hasPressure ? Number((basePressure + pressureVariation + randomNoise).toFixed(1)) : null,
       timestamp: timestamp.toISOString(),
     });
   }
@@ -87,11 +93,11 @@ const generateMeasurements = (sensorId: string, hours: number = 24): Measurement
 
 // Obliczanie danych per pokój
 const calculateRoomData = (): RoomData[] => {
-  const rooms = new Map<string, { temps: number[]; humidities: number[]; count: number }>();
+  const rooms = new Map<string, { temps: number[]; humidities: number[]; pressures: number[]; count: number }>();
 
   mockSensors.forEach(sensor => {
     if (!rooms.has(sensor.location)) {
-      rooms.set(sensor.location, { temps: [], humidities: [], count: 0 });
+      rooms.set(sensor.location, { temps: [], humidities: [], pressures: [], count: 0 });
     }
     const room = rooms.get(sensor.location)!;
     room.count++;
@@ -106,6 +112,9 @@ const calculateRoomData = (): RoomData[] => {
       if (latest.humidity !== null && latest.humidity !== undefined) {
         room.humidities.push(latest.humidity);
       }
+      if (latest.pressure !== null && latest.pressure !== undefined) {
+        room.pressures.push(latest.pressure);
+      }
     }
   });
 
@@ -116,6 +125,9 @@ const calculateRoomData = (): RoomData[] => {
       : null,
     currentHumidity: data.humidities.length > 0
       ? Number((data.humidities.reduce((a, b) => a + b, 0) / data.humidities.length).toFixed(1))
+      : null,
+    currentPressure: data.pressures.length > 0
+      ? Number((data.pressures.reduce((a, b) => a + b, 0) / data.pressures.length).toFixed(1))
       : null,
     sensorCount: data.count,
   }));

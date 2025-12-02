@@ -7,6 +7,7 @@ public record RoomDataDTO(
         String location,
         Double currentTemperature,
         Double currentHumidity,
+        Double currentPressure,
         Integer sensorCount
 ) {
 }

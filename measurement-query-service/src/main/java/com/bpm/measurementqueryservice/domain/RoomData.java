@@ -24,6 +24,8 @@ public class RoomData {
     private BigDecimal currentTemperature;
     @Column(name = "current_humidity", precision = 5, scale = 2)
     private BigDecimal currentHumidity;
+    @Column(name = "current_pressure", precision = 7, scale = 2)
+    private BigDecimal currentPressure;
     @Column(name = "sensor_count")
     private Integer sensorCount;
 

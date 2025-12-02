@@ -8,6 +8,7 @@ public record MeasurementDTO(
         String sensorId,
         Double temperature,
         Double humidity,
+        Double dewPoint,
         String timestamp
 ) {
 }

@@ -14,6 +14,7 @@ public class RoomDataMapper {
                 .location(roomData.getLocation())
                 .currentTemperature(roomData.getCurrentTemperature() != null ? roomData.getCurrentTemperature().doubleValue() : null)
                 .currentHumidity(roomData.getCurrentHumidity() != null ? roomData.getCurrentHumidity().doubleValue() : null)
+                .currentPressure(roomData.getCurrentPressure() != null ? roomData.getCurrentPressure().doubleValue() : null)
                 .sensorCount(roomData.getSensorCount())
                 .build();
     }

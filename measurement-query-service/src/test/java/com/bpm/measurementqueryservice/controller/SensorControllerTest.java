@@ -56,7 +56,7 @@ class SensorControllerTest {
         setField(sensor, "sensorId", "TEST-001");
         setField(sensor, "sensorType", "DHT22");
         setField(sensor, "location", "kitchen");
-        setField(sensor, "lastSeen", "2024-01-01T12:00:00");
+        setField(sensor, "lastSeen", LocalDateTime.of(2024, 1, 1, 12, 0));
         setField(sensor, "isOnline", true);
         setField(sensor, "roomDataId", 1L);
 

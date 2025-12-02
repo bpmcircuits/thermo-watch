@@ -68,6 +68,7 @@ class SensorMeasurementServiceTest {
                 new BigDecimal("23.5"),
                 new BigDecimal("60.0"),
                 new BigDecimal("15.2"),
+                new BigDecimal("1013.25"),
                 LocalDateTime.now()
         );
         when(sensorMeasurementMapper.mapToSensorMeasurementEvent(message, sensorData)).thenReturn(event);

@@ -19,6 +19,7 @@ class SensorMeasurementEventTest {
                 .location("Kitchen")
                 .temperature(new BigDecimal("22.50"))
                 .humidity(new BigDecimal("45.00"))
+                .pressure(new BigDecimal("1013.25"))
                 .dewPoint(new BigDecimal("10.50"))
                 .timestamp(timestamp)
                 .build();
@@ -29,6 +30,7 @@ class SensorMeasurementEventTest {
         assertEquals(new BigDecimal("22.50"), event.temperature());
         assertEquals(new BigDecimal("45.00"), event.humidity());
         assertEquals(new BigDecimal("10.50"), event.dewPoint());
+        assertEquals(new BigDecimal("1013.25"), event.pressure());
         assertEquals(timestamp, event.timestamp());
     }
 
@@ -59,6 +61,7 @@ class SensorMeasurementEventTest {
                 .temperature(new BigDecimal("22.50"))
                 .humidity(new BigDecimal("45.00"))
                 .dewPoint(new BigDecimal("10.50"))
+                .pressure(new BigDecimal("1013.25"))
                 .timestamp(timestamp)
                 .build();
 
@@ -69,6 +72,7 @@ class SensorMeasurementEventTest {
                 .temperature(new BigDecimal("22.50"))
                 .humidity(new BigDecimal("45.00"))
                 .dewPoint(new BigDecimal("10.50"))
+                .pressure(new BigDecimal("1013.25"))
                 .timestamp(timestamp)
                 .build();
 

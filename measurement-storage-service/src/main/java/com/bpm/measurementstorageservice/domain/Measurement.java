@@ -27,6 +27,8 @@ public class Measurement {
     private BigDecimal humidity;
     @Column(name = "dew_point", precision = 5, scale = 2)
     private BigDecimal dewPoint;
+    @Column(name = "pressure", precision = 5, scale = 2)
+    private BigDecimal pressure;
     @Column(name = "timestamp", nullable = false)
     private LocalDateTime timestamp;
 

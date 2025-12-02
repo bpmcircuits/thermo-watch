@@ -12,6 +12,7 @@ export interface Measurement {
   sensorId: string;
   temperature: number | null;
   humidity: number | null;
+  pressure: number | null;
   timestamp: string;
 }
 
@@ -19,6 +20,7 @@ export interface RoomData {
   location: string;
   currentTemperature: number | null;
   currentHumidity: number | null;
+  currentPressure: number | null;
   sensorCount: number;
 }
 

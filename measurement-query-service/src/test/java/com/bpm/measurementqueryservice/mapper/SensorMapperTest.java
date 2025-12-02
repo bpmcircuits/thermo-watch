@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Constructor;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +29,7 @@ class SensorMapperTest {
         setField(sensor, "sensorId", "TEST-001");
         setField(sensor, "sensorType", "DHT22");
         setField(sensor, "location", "Kitchen");
-        setField(sensor, "lastSeen", "2024-01-01T12:00:00");
+        setField(sensor, "lastSeen", LocalDateTime.of(2024, 1, 1, 12, 0));
         setField(sensor, "isOnline", true);
 
         return sensor;
@@ -50,7 +51,7 @@ class SensorMapperTest {
         assertEquals("TEST-001", result.sensorId());
         assertEquals("Kitchen", result.location());
         assertEquals("DHT22", result.sensorType());
-        assertEquals("2024-01-01T12:00:00", result.lastSeen());
+        assertEquals("2024-01-01 12:00:00", result.lastSeen());
         assertTrue(result.isOnline());
     }
 

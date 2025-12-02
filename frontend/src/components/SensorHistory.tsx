@@ -191,12 +191,13 @@ const SensorHistory = () => {
                   <th>{t('sensorHistory.tableTime')}</th>
                   <th>{t('sensorHistory.tableTemp')}</th>
                   <th>{t('sensorHistory.tableHumidity')}</th>
+                  <th>{t('sensorHistory.tablePressure')}</th>
                 </tr>
               </thead>
               <tbody>
                 {latestMeasurements.length === 0 ? (
                   <tr>
-                    <td colSpan={3} className="no-data">
+                    <td colSpan={4} className="no-data">
                       {t('sensorHistory.tableEmpty')}
                     </td>
                   </tr>
@@ -214,6 +215,11 @@ const SensorHistory = () => {
                       <td>
                         {measurement.humidity !== null && measurement.humidity !== undefined
                           ? measurement.humidity.toFixed(1)
+                          : 'N/A'}
+                      </td>
+                      <td>
+                        {measurement.pressure !== null && measurement.pressure !== undefined
+                          ? measurement.pressure.toFixed(1)
                           : 'N/A'}
                       </td>
                     </tr>
