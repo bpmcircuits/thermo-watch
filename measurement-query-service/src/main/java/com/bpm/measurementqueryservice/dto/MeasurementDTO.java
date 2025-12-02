@@ -9,6 +9,7 @@ public record MeasurementDTO(
         Double temperature,
         Double humidity,
         Double dewPoint,
+        Double pressure,
         String timestamp
 ) {
 }

@@ -18,6 +18,7 @@ public class MeasurementMapper {
                 .temperature(measurement.getTemperature() != null ? measurement.getTemperature().doubleValue() : null)
                 .humidity(measurement.getHumidity() != null ? measurement.getHumidity().doubleValue() : null)
                 .dewPoint(measurement.getDewPoint() != null ? measurement.getDewPoint().doubleValue() : null)
+                .pressure(measurement.getPressure() != null ? measurement.getPressure().doubleValue() : null)
                 .timestamp(getLocalDateTimeFormatted(measurement))
                 .build();
     }

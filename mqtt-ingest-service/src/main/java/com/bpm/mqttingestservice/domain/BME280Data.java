@@ -17,4 +17,8 @@ public class BME280Data implements SensorData {
     private double dewPoint;
     @JsonProperty("Pressure")
     private double pressure;
+
+    public static String sensorType() {
+        return SENSOR_TYPE;
+    }
 }
